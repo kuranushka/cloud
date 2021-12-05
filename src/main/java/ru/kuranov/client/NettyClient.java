@@ -7,16 +7,17 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class NettyClient {
     SocketChannel channel;
-    Callback callback;
+    OnMessageReceived callback;
 
-    public NettyClient(Callback callback) {
+    public NettyClient(OnMessageReceived callback) {
         this.callback = callback;
         new Thread(() -> {
             EventLoopGroup group = new NioEventLoopGroup();
@@ -29,9 +30,9 @@ public class NettyClient {
                             protected void initChannel(SocketChannel ch) throws Exception {
                                 channel = ch;
                                 ch.pipeline().addLast(
-                                        new StringEncoder(),
-                                        new StringDecoder(),
-                                        new ClientEventHandler(callback)
+                                        new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                        new ObjectEncoder(),
+                                        new ClientMessageHandler(callback)
                                 );
                             }
                         }).connect("localhost", 8189).sync();
@@ -44,7 +45,7 @@ public class NettyClient {
         }).start();
     }
 
-    public void sendMsg(String s) {
-        channel.writeAndFlush(s);
+    public void sendMessage(StringMessage stringMessage) {
+        channel.writeAndFlush(stringMessage);
     }
 }

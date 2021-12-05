@@ -1,14 +1,15 @@
 package ru.kuranov.client;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
-public class Console {
+public class ConsoleClient {
     public static void main(String[] args) {
-        NettyClient nettyClient = new NettyClient(System.out::println);
+        NettyClient netty = new NettyClient(System.out::println);
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String msg = scanner.nextLine();
-            nettyClient.sendMsg(msg);
+            netty.sendMessage(new StringMessage(msg, LocalDate.now()));
         }
     }
 }
