@@ -1,7 +1,8 @@
 package ru.kuranov.server;
 
-public class Main {
+public class ServerStart {
     public static void main(String[] args) {
         DBhandler dBhandler = new DBhandler();
+        NettyServer nettyServer = new NettyServer();
     }
 }

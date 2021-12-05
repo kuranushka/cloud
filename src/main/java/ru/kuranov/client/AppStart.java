@@ -4,15 +4,17 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ru.kuranov.client.ui.MainWindow;
+import ru.kuranov.client.ui.AuthWindow;
 
 import java.io.IOException;
 
-public class ClientApp extends Application {
+public class AppStart extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader client = new FXMLLoader(Client.class.getResource("client.fxml"));
-        FXMLLoader welcome = new FXMLLoader(Welcome.class.getResource("welcome.fxml"));
+        FXMLLoader client = new FXMLLoader(MainWindow.class.getResource("client.fxml"));
+        FXMLLoader welcome = new FXMLLoader(AuthWindow.class.getResource("welcome.fxml"));
         showWelcome(welcome, stage);
         //showClient(client, stage);
 

@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ru.kuranov.client.Client">
+            fx:controller="ru.kuranov.client.ui.MainWindow">
     <ListView fx:id="server" layoutX="397.0" layoutY="66.0" prefHeight="260.0" prefWidth="240.0"/>
     <TextField fx:id="serverLine" layoutX="397.0" layoutY="335.0" prefHeight="26.0" prefWidth="240.0" text="-&gt;"/>
     <Button fx:id="up" layoutX="316.0" layoutY="66.0" minWidth="70.0" mnemonicParsing="false" text="↑↑"/>
