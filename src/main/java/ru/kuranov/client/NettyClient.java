@@ -11,6 +11,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
+import ru.kuranov.client.msgtype.AuthMessage;
+import ru.kuranov.client.msgtype.StringMessage;
 
 @Slf4j
 public class NettyClient {
@@ -47,5 +49,9 @@ public class NettyClient {
 
     public void sendMessage(StringMessage stringMessage) {
         channel.writeAndFlush(stringMessage);
+    }
+
+    public void sendMessage(AuthMessage authMessage) {
+        channel.writeAndFlush(authMessage);
     }
 }
