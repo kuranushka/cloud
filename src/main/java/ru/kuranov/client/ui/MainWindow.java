@@ -1,10 +1,15 @@
 package ru.kuranov.client.ui;
 
+import com.sun.org.apache.xml.internal.security.Init;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class MainWindow {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class MainWindow implements Initializable {
 
     public Button up;
     public Button open;
@@ -17,4 +22,9 @@ public class MainWindow {
     public TextField homeLine;
     public ListView<String> server;
     public TextField serverLine;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }

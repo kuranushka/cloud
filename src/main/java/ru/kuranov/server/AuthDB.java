@@ -23,6 +23,7 @@ public class AuthDB extends DBConnections {
                     msg.setAuth(true);
                     log.debug("User {} accepted", msg);
                 }
+                conn.close();
                 return msg;
             } else {
                 log.debug("Connection to DB is not established");

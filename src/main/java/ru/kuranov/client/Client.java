@@ -1,13 +1,18 @@
 package ru.kuranov.client;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import ru.kuranov.client.msgtype.AuthMessage;
-import ru.kuranov.client.msgtype.StringMessage;
+import ru.kuranov.client.ui.AuthWindow;
 
-import java.time.LocalDate;
+import java.io.IOException;
 import java.util.Scanner;
 
-public class ConsoleClient {
-    public static void main(String[] args) {
+public class Client {
+    public Client() {
         NettyClient netty = new NettyClient(System.out::println);
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -17,3 +22,4 @@ public class ConsoleClient {
         }
     }
 }
+

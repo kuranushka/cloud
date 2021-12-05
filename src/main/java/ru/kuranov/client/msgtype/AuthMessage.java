@@ -2,7 +2,6 @@ package ru.kuranov.client.msgtype;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import ru.kuranov.client.AbstractMessage;
 
 @Data
