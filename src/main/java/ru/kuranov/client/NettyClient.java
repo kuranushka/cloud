@@ -17,7 +17,17 @@ import ru.kuranov.client.msgtype.StringMessage;
 @Slf4j
 public class NettyClient {
     SocketChannel channel;
-    OnMessageReceived callback;
+    static OnMessageReceived callback;
+    //static NettyClient nettyClient;
+
+/*    public static NettyClient getNettyClient() {
+        if(nettyClient == null) {
+            NettyClient nettyClient;
+            nettyClient = new NettyClient(callback);
+            return nettyClient;
+        }
+        return nettyClient;
+    }*/
 
     public NettyClient(OnMessageReceived callback) {
         this.callback = callback;

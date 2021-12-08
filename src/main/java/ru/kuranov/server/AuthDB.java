@@ -15,13 +15,11 @@ public class AuthDB extends DBConnections {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
                 preparedStatement.setString(1, msg.getUser());
                 ResultSet resultSet = preparedStatement.executeQuery();
-                String pass = "";
                 while (resultSet.next()) {
-                    pass = resultSet.getString("PASS");
-                }
-                if (msg.getPassword().equals(pass)) {
-                    msg.setAuth(true);
-                    log.debug("User {} accepted", msg);
+                    if (msg.getPassword().equals(resultSet.getString("PASS"))) {
+                        msg.setAuth(true);
+                        log.debug("User {} accepted", msg);
+                    }
                 }
                 conn.close();
                 return msg;

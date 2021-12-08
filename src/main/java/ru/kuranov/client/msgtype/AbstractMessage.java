@@ -1,4 +1,4 @@
-package ru.kuranov.client;
+package ru.kuranov.client.msgtype;
 
 import java.io.Serializable;
 
