@@ -1,4 +1,4 @@
-package ru.kuranov.client;
+package ru.kuranov.client.net;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -11,26 +11,18 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
-import ru.kuranov.client.msgtype.AuthMessage;
-import ru.kuranov.client.msgtype.StringMessage;
+import ru.kuranov.client.handler.ClientMessageHandler;
+import ru.kuranov.client.handler.OnMessageReceived;
+import ru.kuranov.client.msg.AuthMessage;
+import ru.kuranov.client.msg.StringMessage;
 
 @Slf4j
 public class NettyClient {
-    SocketChannel channel;
     static OnMessageReceived callback;
-    //static NettyClient nettyClient;
-
-/*    public static NettyClient getNettyClient() {
-        if(nettyClient == null) {
-            NettyClient nettyClient;
-            nettyClient = new NettyClient(callback);
-            return nettyClient;
-        }
-        return nettyClient;
-    }*/
+    SocketChannel channel;
 
     public NettyClient(OnMessageReceived callback) {
-        this.callback = callback;
+        NettyClient.callback = callback;
         new Thread(() -> {
             EventLoopGroup group = new NioEventLoopGroup();
             try {
@@ -39,7 +31,7 @@ public class NettyClient {
                         .group(group)
                         .handler(new ChannelInitializer<SocketChannel>() {
                             @Override
-                            protected void initChannel(SocketChannel ch) throws Exception {
+                            protected void initChannel(SocketChannel ch) {
                                 channel = ch;
                                 ch.pipeline().addLast(
                                         new ObjectDecoder(ClassResolvers.cacheDisabled(null)),

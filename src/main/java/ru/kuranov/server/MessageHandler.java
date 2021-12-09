@@ -3,15 +3,15 @@ package ru.kuranov.server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
-import ru.kuranov.client.msgtype.AbstractMessage;
-import ru.kuranov.client.msgtype.AuthMessage;
+import ru.kuranov.client.msg.AbstractMessage;
+import ru.kuranov.client.msg.AuthMessage;
 
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
     private DBConnections connection;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
         if (msg.getClass() == AuthMessage.class
                 && !((AuthMessage) msg).isAuth()
                 && !((AuthMessage) msg).isNewUser()) {

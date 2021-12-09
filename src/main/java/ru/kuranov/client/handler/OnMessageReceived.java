@@ -1,6 +1,6 @@
-package ru.kuranov.client;
+package ru.kuranov.client.handler;
 
-import ru.kuranov.client.msgtype.AbstractMessage;
+import ru.kuranov.client.msg.AbstractMessage;
 
 public interface OnMessageReceived {
     void onReceive(AbstractMessage msg);

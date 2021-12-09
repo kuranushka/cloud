@@ -1,8 +1,6 @@
 package ru.kuranov.client;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,8 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import ru.kuranov.client.NettyClient;
-import ru.kuranov.client.msgtype.AuthMessage;
+import ru.kuranov.client.auth.Authentication;
+import ru.kuranov.client.msg.AuthMessage;
+import ru.kuranov.client.net.NettyClient;
 import ru.kuranov.client.ui.MainWindow;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class App extends Application {
     NettyClient nettyClient;
 
     @Override
-    public void start(Stage authStage) throws IOException {
+    public void start(Stage authStage) {
         nettyClient = new NettyClient(System.out::println);
         authStage.setTitle("Cloud Storage Authorisation");
         GridPane grid = new GridPane();
@@ -34,14 +33,18 @@ public class App extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
+
+        Label label = new Label("Welcome, please enter your user  and password");
+        grid.add(label, 0, 1);
+
         Label userLabel = new Label("User:");
-        grid.add(userLabel, 0, 1);
+        grid.add(userLabel, 0, 2);
         TextField user = new TextField();
-        grid.add(user, 1, 1);
+        grid.add(user, 1, 2);
         Label passLabel = new Label("Password:");
-        grid.add(passLabel, 0, 2);
+        grid.add(passLabel, 0, 3);
         PasswordField password = new PasswordField();
-        grid.add(password, 1, 2);
+        grid.add(password, 1, 3);
         Button enter = new Button("Enter");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
@@ -49,25 +52,19 @@ public class App extends Application {
         grid.add(hbBtn, 1, 4);
 
 
-        enter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
+        enter.setOnAction(e -> {
+            authMessage = new AuthMessage(false, false, user.getText(), password.getText());
+            nettyClient.sendMessage(authMessage);
 
+            try {
+                Thread.sleep(500);// задержка на отправку и возврат авторизации из базы
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
 
+            System.out.println("testForm" + Authentication.isAuth());
 
-                authMessage = AuthMessage.getAuthMessage(false, false, user.getText(), password.getText());
-                nettyClient.sendMessage(authMessage);
-
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-
-                authMessage = AuthMessage.simpleAuthMessage();
-                System.out.println("testForm" + authMessage);
-
-
+            if (Authentication.isAuth()) {
                 authStage.close();
 
                 Stage stage = new Stage();
@@ -80,13 +77,12 @@ public class App extends Application {
                 }
                 stage.setScene(scene);
                 stage.show();
-
-
+            } else {
+                user.setText("");
+                password.setText("");
+                label.setText("uncorrect login or password!!!");
             }
         });
-
-
-
         Scene scene = new Scene(grid, 330, 275);
         authStage.setScene(scene);
         authStage.show();
