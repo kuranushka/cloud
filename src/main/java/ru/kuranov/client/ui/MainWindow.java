@@ -43,7 +43,7 @@ public class MainWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        rootDirectory = new File("src/main/resources/ru/my computer");
+        rootDirectory = new File("src/main/resources/ru/myComputer");
         filesDirectory = rootDirectory.listFiles();
         selectedFiles = new HashSet<>();
         items = FXCollections.observableArrayList(filesDirectory);
