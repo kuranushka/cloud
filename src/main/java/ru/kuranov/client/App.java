@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import ru.kuranov.client.auth.Authentication;
+import ru.kuranov.client.handler.CommandHandler;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
 import ru.kuranov.client.ui.MainWindow;
@@ -77,6 +78,9 @@ public class App extends Application {
                 }
                 stage.setScene(scene);
                 stage.show();
+
+                CommandHandler commandHandler = new CommandHandler(nettyClient);
+
             } else {
                 user.setText("");
                 password.setText("");
