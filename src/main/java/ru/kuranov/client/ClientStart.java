@@ -81,7 +81,7 @@ public class ClientStart extends Application {
             } else {
                 user.setText("");
                 password.setText("");
-                label.setText("uncorrect login or password!!!");
+                label.setText("incorrect login or password!!!");
             }
         });
         Scene scene = new Scene(grid, 330, 275);
