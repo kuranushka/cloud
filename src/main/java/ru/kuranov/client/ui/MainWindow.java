@@ -42,12 +42,14 @@ public class MainWindow implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         rootDirectory = new File("src/main/resources/ru/my computer");
         filesDirectory = rootDirectory.listFiles();
         selectedFiles = new HashSet<>();
         items = FXCollections.observableArrayList(filesDirectory);
         homeFileList.setItems(items);
         homeFileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
         homeFileList.getSelectionModel().getSelectedItems().addListener(
                 (ListChangeListener.Change<? extends File> change) ->
                 {
@@ -57,9 +59,12 @@ public class MainWindow implements Initializable {
 
 
         buttonSendFile.setOnAction(event -> {
-            CommandMessage commandMessage = new CommandMessage(selectedFiles, Command.SEND);
-            nettyClient = ClientStart.getNettyClient();
-            nettyClient.sendMessage(commandMessage);
+            if (!selectedFiles.isEmpty()) {
+                CommandMessage commandMessage = new CommandMessage(selectedFiles, Command.SEND);
+                nettyClient = ClientStart.getNettyClient();
+                nettyClient.sendMessage(commandMessage);
+                selectedFiles.clear();
+            }
         });
 
     }

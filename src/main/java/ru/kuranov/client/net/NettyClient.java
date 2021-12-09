@@ -61,4 +61,5 @@ public class NettyClient {
     public void sendMessage(CommandMessage commandMessage) {
         channel.writeAndFlush(commandMessage);
     }
+
 }
