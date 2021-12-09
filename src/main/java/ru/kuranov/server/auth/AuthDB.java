@@ -1,4 +1,4 @@
-package ru.kuranov.server;
+package ru.kuranov.server.auth;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.msg.AuthMessage;

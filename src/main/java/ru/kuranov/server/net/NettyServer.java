@@ -1,4 +1,4 @@
-package ru.kuranov.server;
+package ru.kuranov.server.net;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -11,6 +11,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
+import ru.kuranov.server.handler.MessageHandler;
 
 @Slf4j
 public class NettyServer {

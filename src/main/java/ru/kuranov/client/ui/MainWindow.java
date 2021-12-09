@@ -1,7 +1,5 @@
 package ru.kuranov.client.ui;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +9,7 @@ import lombok.Data;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 @Data
 public class MainWindow implements Initializable {
 
