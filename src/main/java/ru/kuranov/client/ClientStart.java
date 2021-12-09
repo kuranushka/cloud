@@ -13,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import ru.kuranov.client.auth.Authentication;
-import ru.kuranov.client.handler.CommandHandler;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
 import ru.kuranov.client.ui.MainWindow;
@@ -21,9 +20,13 @@ import ru.kuranov.client.ui.MainWindow;
 import java.io.IOException;
 
 
-public class App extends Application {
+public class ClientStart extends Application {
+    static NettyClient nettyClient;
     AuthMessage authMessage;
-    NettyClient nettyClient;
+
+    public static NettyClient getNettyClient() {
+        return nettyClient;
+    }
 
     @Override
     public void start(Stage authStage) {
@@ -52,7 +55,6 @@ public class App extends Application {
         hbBtn.getChildren().add(enter);
         grid.add(hbBtn, 1, 4);
 
-
         enter.setOnAction(e -> {
             authMessage = new AuthMessage(false, false, user.getText(), password.getText());
             nettyClient.sendMessage(authMessage);
@@ -62,8 +64,6 @@ public class App extends Application {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-
-            System.out.println("testForm" + Authentication.isAuth());
 
             if (Authentication.isAuth()) {
                 authStage.close();
@@ -78,9 +78,6 @@ public class App extends Application {
                 }
                 stage.setScene(scene);
                 stage.show();
-
-                CommandHandler commandHandler = new CommandHandler(nettyClient);
-
             } else {
                 user.setText("");
                 password.setText("");

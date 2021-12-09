@@ -15,8 +15,6 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
-
-
         if (msg.getClass() == AuthMessage.class && ((AuthMessage) msg).isAuth()) {
             Authentication.setAuth(true);
             System.out.println("clientHandler" + Authentication.isAuth());

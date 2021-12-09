@@ -2,7 +2,7 @@ package ru.kuranov.client.handler;
 
 import java.util.Arrays;
 
-public enum Commands {
+public enum Command {
     LEVEL_UP(".."),
     OPEN("open"),
     CREATE("touch"),
@@ -14,11 +14,11 @@ public enum Commands {
     private final String command;
 
 
-    Commands(String command) {
+    Command(String command) {
         this.command = command;
     }
 
-    public static Commands byCommand(String command) {
+    public static Command byCommand(String command) {
         return Arrays.stream(values())
                 .filter(cmd -> cmd.getCommand().equals(command))
                 .findAny()

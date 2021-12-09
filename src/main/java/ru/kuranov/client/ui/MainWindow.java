@@ -6,6 +6,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.Data;
+import ru.kuranov.client.ClientStart;
+import ru.kuranov.client.handler.Command;
+import ru.kuranov.client.msg.CommandMessage;
+import ru.kuranov.client.net.NettyClient;
 
 import java.io.File;
 import java.net.URL;
@@ -32,23 +36,31 @@ public class MainWindow implements Initializable {
 
     private File rootDirectory;
     private File[] filesDirectory;
-    private Set<File> selectedList;
+    private Set<File> selectedFiles;
     private ObservableList<File> items;
+    private NettyClient nettyClient;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         rootDirectory = new File("src/main/resources/ru/my computer");
         filesDirectory = rootDirectory.listFiles();
-        selectedList = new HashSet<>();
+        selectedFiles = new HashSet<>();
         items = FXCollections.observableArrayList(filesDirectory);
         homeFileList.setItems(items);
-        homeFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        homeFileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         homeFileList.getSelectionModel().getSelectedItems().addListener(
                 (ListChangeListener.Change<? extends File> change) ->
                 {
                     ObservableList<File> oList = homeFileList.getSelectionModel().getSelectedItems();
-                    selectedList.addAll(oList);
+                    selectedFiles.addAll(oList);
                 });
-        buttonCreateFile.setOnAction(event -> serverLine.setText("CATCH"));
+
+
+        buttonSendFile.setOnAction(event -> {
+            CommandMessage commandMessage = new CommandMessage(selectedFiles, Command.SEND);
+            nettyClient = ClientStart.getNettyClient();
+            nettyClient.sendMessage(commandMessage);
+        });
+
     }
 }

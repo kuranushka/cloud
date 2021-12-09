@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.msg.AuthMessage;
+import ru.kuranov.client.msg.CommandMessage;
 import ru.kuranov.client.msg.StringMessage;
 
 @Slf4j
@@ -55,5 +56,9 @@ public class NettyClient {
 
     public void sendMessage(AuthMessage authMessage) {
         channel.writeAndFlush(authMessage);
+    }
+
+    public void sendMessage(CommandMessage commandMessage) {
+        channel.writeAndFlush(commandMessage);
     }
 }
