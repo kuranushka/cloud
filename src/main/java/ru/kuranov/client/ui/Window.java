@@ -28,9 +28,7 @@ public class Window implements Initializable {
     public Button buttonRenameFile;
     public Button buttonDeleteFile;
     public ListView<String> homeFileList;
-    public TextField homeLine;
     public ListView<String> serverFileList;
-    public TextField serverLine;
     public Button buttonCreateFile;
     public Label myComputerLabel;
     public Label cloudStorageLabel;
