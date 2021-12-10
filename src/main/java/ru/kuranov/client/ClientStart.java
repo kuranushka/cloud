@@ -43,11 +43,12 @@ public class ClientStart extends Application {
 
         Label userLabel = new Label("User:");
         grid.add(userLabel, 0, 2);
-        TextField user = new TextField();
+        TextField user = new TextField("user1");
         grid.add(user, 1, 2);
         Label passLabel = new Label("Password:");
         grid.add(passLabel, 0, 3);
         PasswordField password = new PasswordField();
+        password.appendText("pass1");
         grid.add(password, 1, 3);
         Button enter = new Button("Enter");
         HBox hbBtn = new HBox(10);
