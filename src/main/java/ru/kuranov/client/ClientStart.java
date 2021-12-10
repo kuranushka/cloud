@@ -67,6 +67,7 @@ public class ClientStart extends Application {
             }
 
             if (Authentication.isAuth()) {
+            //if (true) {
                 authStage.close();
 
                 Stage stage = new Stage();

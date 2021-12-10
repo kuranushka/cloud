@@ -74,20 +74,20 @@ public class MainWindow implements Initializable {
             try {
                 fis = new FileInputStream(file.getName());
             } catch (FileNotFoundException e) {
-                log.debug("File not found ... {}" , e);
+                log.debug("File not found ... {}", e);
             }
             byte[] buf = new byte[0];
             try {
                 buf = new byte[fis.available()];
                 fis.read(buf);
             } catch (IOException e) {
-                log.debug("File not read or not buffered ... {}" , e);
+                log.debug("File not read or not buffered ... {}", e);
             }
-            log.debug("Read file ...");
+            log.debug("Read file {}", file.getName());
 
             FileTransferMessage fileTransferMessage = new FileTransferMessage(file.getName(), Command.SEND, Direction.TRANSFER_TO_SERVER, buf);
             nettyClient.sendMessage(fileTransferMessage);
-            log.debug("Send file ...");
+            log.debug("Send file {}", file.getName());
         });
     }
 }

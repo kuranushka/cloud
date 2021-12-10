@@ -29,6 +29,10 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
 
+        if (!isAuth) {
+            //
+        }
+
         // авторизация в базе данных
         if (msg.getClass() == AuthMessage.class
                 && !((AuthMessage) msg).isAuth()
@@ -47,27 +51,32 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
                 }
                 log.debug("Create user directory: {}", path);
             }
-
-            // приём файла
-            if (isAuth
-                    && msg.getClass() == FileTransferMessage.class
-                    && (((FileTransferMessage) msg).getCommand() == Command.SEND)) {
-                receiveFile(ctx, msg);
-            }
-            ctx.writeAndFlush(connection.auth((AuthMessage) msg));
+            // возвращаем авторизацию клиенту
+            ctx.writeAndFlush(msg);
+            //ctx.writeAndFlush(connection.auth((AuthMessage) msg));
         }
+
+
+        // приём файла
+        if (isAuth
+                && msg.getClass() == FileTransferMessage.class
+                && (((FileTransferMessage) msg).getCommand() == Command.SEND)) {
+            receiveFile(ctx, msg);
+        }
+
+
         log.debug("Received {}", msg);
-        ctx.writeAndFlush(msg);
         sendListFiles(ctx);
     }
 
     // сохраняем файл от клиента
     private void receiveFile(ChannelHandlerContext ctx, AbstractMessage msg) {
+        log.debug("Place to save {}", directory.toString());
         try {
-            FileOutputStream fos = new FileOutputStream(((FileTransferMessage) msg).getFile());
+            FileOutputStream fos = new FileOutputStream(directory.toFile() + ((FileTransferMessage) msg).getFile());
             byte[] buf = ((FileTransferMessage) msg).getByf();
             fos.write(buf);
-            log.debug("Files {} saved", ((FileTransferMessage)msg).getFile());
+            log.debug("Files {} saved to {}", ((FileTransferMessage) msg).getFile(), directory.toFile());
             sendListFiles(ctx);
         } catch (IOException e) {
             log.debug("File not saved in user directory");
@@ -76,11 +85,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
     // отправить клиенту список файлов из его папки
     private void sendListFiles(ChannelHandlerContext ctx) {
-        log.debug("Try send listFiles from user directory ...");
+        //log.debug("Try send listFiles from user directory ...");
         //file = new File(directory.toString());
         String[] files = file.list();
         FileListMessage msg = new FileListMessage(files);
         ctx.writeAndFlush(msg);
-        log.debug("Send listFiles from user directory ...");
+        //log.debug("Send listFiles from user directory ...");
     }
 }
