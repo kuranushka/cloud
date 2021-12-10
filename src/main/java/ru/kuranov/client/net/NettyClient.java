@@ -26,9 +26,18 @@ import java.io.IOException;
 @Slf4j
 public class NettyClient {
     static OnMessageReceived callback;
+    static NettyClient instance;
     SocketChannel channel;
 
-    public NettyClient(OnMessageReceived callback) {
+    public static NettyClient getInstance(OnMessageReceived callback){
+        if(instance == null) {
+            instance = new NettyClient(callback);
+            return instance;
+        } else {
+            return instance;
+        }
+    }
+    private NettyClient(OnMessageReceived callback) {
         NettyClient.callback = callback;
         new Thread(() -> {
             EventLoopGroup group = new NioEventLoopGroup();
@@ -43,7 +52,8 @@ public class NettyClient {
                                 ch.pipeline().addLast(
                                         new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                         new ObjectEncoder(),
-                                        new ClientMessageHandler(callback)
+                                        //new ClientMessageHandler(callback),
+                                        ClientMessageHandler.getInstance(callback)
                                         );
                             }
                         }).connect("localhost", 8189).sync();

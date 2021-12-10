@@ -13,9 +13,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import ru.kuranov.client.auth.Authentication;
+import ru.kuranov.client.msg.AbstractMessage;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
-import ru.kuranov.client.ui.MainWindow;
+import ru.kuranov.client.ui.Window;
 
 import java.io.IOException;
 
@@ -28,9 +29,13 @@ public class ClientStart extends Application {
         return nettyClient;
     }
 
+    private void readMessage(AbstractMessage msg){
+
+    }
+
     @Override
     public void start(Stage authStage) {
-        nettyClient = new NettyClient(System.out::println);
+        nettyClient = NettyClient.getInstance(System.out::println);
         authStage.setTitle("Cloud Storage Authorisation");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -38,7 +43,7 @@ public class ClientStart extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Label label = new Label("Welcome, please enter your user  and password");
+        Label label = new Label("Enter your user and password");
         grid.add(label, 0, 1);
 
         Label userLabel = new Label("User:");
@@ -67,11 +72,10 @@ public class ClientStart extends Application {
             }
 
             if (Authentication.isAuth()) {
-            //if (true) {
                 authStage.close();
 
                 Stage stage = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("window.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
                 Scene scene = null;
                 try {
                     scene = new Scene(fxmlLoader.load());

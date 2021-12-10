@@ -21,7 +21,7 @@ public class AuthDB extends DBConnections {
     }
 
     public boolean auth(AuthMessage msg) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "-1Password*)")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "root")) {
             if (conn != null) {
                 log.debug("Connection to DB is Up");
                 String sql = "SELECT pass FROM data WHERE login=?;";

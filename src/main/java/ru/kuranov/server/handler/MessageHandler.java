@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
@@ -30,31 +31,33 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
 
         if (!isAuth) {
-            //
-        }
+            // авторизация в базе данных
+            if (msg.getClass() == AuthMessage.class
+                    && !((AuthMessage) msg).isAuth()
+                    && !((AuthMessage) msg).isNewUser()) {
+                connection = AuthDB.getInstance();
+                isAuth = connection.auth((AuthMessage) msg);
+                path = Paths.get("." + ((AuthMessage) msg).getUser());
+                file = new File("." + ((AuthMessage) msg).getUser());
 
-        // авторизация в базе данных
-        if (msg.getClass() == AuthMessage.class
-                && !((AuthMessage) msg).isAuth()
-                && !((AuthMessage) msg).isNewUser()) {
-            connection = AuthDB.getInstance();
-            isAuth = connection.auth((AuthMessage) msg);
-            path = Paths.get("." + ((AuthMessage) msg).getUser());
-            file = new File("." + ((AuthMessage) msg).getUser());
-
-            // создание папки пользователя
-            if (isAuth && !file.exists()) {
-                try {
-                    directory = Files.createDirectory(path);
-                } catch (IOException e) {
-                    log.debug("Directory not create");
+                // создание папки пользователя
+                if (isAuth && !file.exists()) {
+                    try {
+                        directory = Files.createDirectory(path);
+                    } catch (IOException e) {
+                        log.debug("Directory not create");
+                    }
+                    log.debug("Create user directory: {}", path);
+                } else {
+                    directory = Paths.get("." + ((AuthMessage) msg).getUser());
                 }
-                log.debug("Create user directory: {}", path);
+                // возвращаем авторизацию клиенту
+                ctx.writeAndFlush(msg);
+                //ctx.writeAndFlush(connection.auth((AuthMessage) msg));
             }
-            // возвращаем авторизацию клиенту
-            ctx.writeAndFlush(msg);
-            //ctx.writeAndFlush(connection.auth((AuthMessage) msg));
         }
+
+
 
 
         // приём файла
@@ -73,7 +76,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
     private void receiveFile(ChannelHandlerContext ctx, AbstractMessage msg) {
         log.debug("Place to save {}", directory.toString());
         try {
-            FileOutputStream fos = new FileOutputStream(directory.toFile() + ((FileTransferMessage) msg).getFile());
+            FileOutputStream fos = new FileOutputStream(directory.toFile() + "/" + ((FileTransferMessage) msg).getFile());
             byte[] buf = ((FileTransferMessage) msg).getByf();
             fos.write(buf);
             log.debug("Files {} saved to {}", ((FileTransferMessage) msg).getFile(), directory.toFile());
@@ -90,6 +93,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         String[] files = file.list();
         FileListMessage msg = new FileListMessage(files);
         ctx.writeAndFlush(msg);
-        //log.debug("Send listFiles from user directory ...");
+        log.debug("Dir {} files: {}", directory+"/", Arrays.toString(files));
     }
 }
