@@ -7,8 +7,21 @@ import java.sql.*;
 
 @Slf4j
 public class AuthDB extends DBConnections {
+    private static AuthDB instance;
+
+    private AuthDB() {
+    }
+
+    public static AuthDB getInstance() {
+        if (instance == null) {
+            return new AuthDB();
+        } else {
+            return instance;
+        }
+    }
+
     public AuthMessage auth(AuthMessage msg) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "root")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "-1Password*)")) {
             if (conn != null) {
                 log.debug("Connection to DB is Up");
                 String sql = "SELECT pass FROM data WHERE login=?;";

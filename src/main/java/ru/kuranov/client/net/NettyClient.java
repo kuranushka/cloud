@@ -12,10 +12,16 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
+import ru.kuranov.client.handler.Command;
+import ru.kuranov.client.handler.Direction;
 import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.msg.AuthMessage;
-import ru.kuranov.client.msg.CommandMessage;
+import ru.kuranov.client.msg.FileTransferMessage;
 import ru.kuranov.client.msg.StringMessage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Slf4j
 public class NettyClient {
@@ -38,7 +44,7 @@ public class NettyClient {
                                         new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                         new ObjectEncoder(),
                                         new ClientMessageHandler(callback)
-                                );
+                                        );
                             }
                         }).connect("localhost", 8189).sync();
                 future.channel().closeFuture().sync();
@@ -58,8 +64,12 @@ public class NettyClient {
         channel.writeAndFlush(authMessage);
     }
 
-    public void sendMessage(CommandMessage commandMessage) {
-        channel.writeAndFlush(commandMessage);
+    public void sendMessage(FileTransferMessage fileTransferMessage) {
+        channel.writeAndFlush(fileTransferMessage);
+    }
+
+    public void send() throws IOException {
+
     }
 
 }

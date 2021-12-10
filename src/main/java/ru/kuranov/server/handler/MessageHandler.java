@@ -14,14 +14,24 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
+
+        // авторизация
         if (msg.getClass() == AuthMessage.class
                 && !((AuthMessage) msg).isAuth()
                 && !((AuthMessage) msg).isNewUser()) {
-            connection = new AuthDB();
+            connection = AuthDB.getInstance();
             ctx.writeAndFlush(connection.auth((AuthMessage) msg));
 
         }
+
+        // приём файлов
+
+
+
+
         log.debug("Received {}", msg);
         ctx.writeAndFlush(msg);
+
+
     }
 }

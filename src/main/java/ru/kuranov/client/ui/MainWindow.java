@@ -9,10 +9,14 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.ClientStart;
 import ru.kuranov.client.handler.Command;
-import ru.kuranov.client.msg.CommandMessage;
+import ru.kuranov.client.handler.Direction;
+import ru.kuranov.client.msg.FileTransferMessage;
 import ru.kuranov.client.net.NettyClient;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -44,9 +48,8 @@ public class MainWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        rootDirectory = new File("src/main/resources/ru/myComputer");
+        rootDirectory = new File(".");
         files = rootDirectory.list();
-        //selectedFile = new HashSet<>();
         items = FXCollections.observableArrayList(files);
         homeFileList.setItems(items);
         homeFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -65,11 +68,26 @@ public class MainWindow implements Initializable {
 
 
         buttonSendFile.setOnAction(event -> {
-            if (!selectedFile.isEmpty()) {
-                CommandMessage commandMessage = new CommandMessage(selectedFile, Command.SEND);
-                nettyClient = ClientStart.getNettyClient();
-                nettyClient.sendMessage(commandMessage);
+            nettyClient = ClientStart.getNettyClient();
+            File file = new File(selectedFile);
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file.getName());
+            } catch (FileNotFoundException e) {
+                log.debug("File not found ... {}" , e);
             }
+            byte[] buf = new byte[0];
+            try {
+                buf = new byte[fis.available()];
+                fis.read(buf);
+            } catch (IOException e) {
+                log.debug("File not read or not buffered ... {}" , e);
+            }
+            log.debug("Read file ...");
+
+            FileTransferMessage fileTransferMessage = new FileTransferMessage(file.getName(), Command.SEND, Direction.TRANSFER_TO_SERVER, buf);
+            nettyClient.sendMessage(fileTransferMessage);
+            log.debug("Send file ...");
         });
     }
 }
