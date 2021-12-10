@@ -18,8 +18,8 @@ import java.io.IOException;
 @Slf4j
 public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
     private static ClientMessageHandler instance;
-    private OnMessageReceived callback;
-    private NettyClient nettyClient;
+    private final OnMessageReceived callback;
+    private final NettyClient nettyClient;
     private AbstractMessage msg;
     private String[] serverFiles;
 
@@ -43,13 +43,13 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
         readServerFileList(msg);
     }
 
-    private void readServerFileList(AbstractMessage msg){
-        if(msg.getClass() == FileListMessage.class) {
+    private void readServerFileList(AbstractMessage msg) {
+        if (msg.getClass() == FileListMessage.class) {
             serverFiles = ((FileListMessage) msg).getFiles();
         }
     }
 
-    public String[] getServerFiles(){
+    public String[] getServerFiles() {
         return serverFiles;
     }
 

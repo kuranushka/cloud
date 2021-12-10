@@ -7,5 +7,5 @@ public enum Command {
     SEND,
     RECEIVE,
     RENAME,
-    DELETE;
+    DELETE
 }

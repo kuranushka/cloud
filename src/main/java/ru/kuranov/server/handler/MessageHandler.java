@@ -58,8 +58,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         }
 
 
-
-
         // приём файла
         if (isAuth
                 && msg.getClass() == FileTransferMessage.class
@@ -93,6 +91,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         String[] files = file.list();
         FileListMessage msg = new FileListMessage(files);
         ctx.writeAndFlush(msg);
-        log.debug("Dir {} files: {}", directory+"/", Arrays.toString(files));
+        log.debug("Dir {} files: {}", directory + "/", Arrays.toString(files));
     }
 }

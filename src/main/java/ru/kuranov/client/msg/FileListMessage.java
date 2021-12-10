@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FileListMessage extends AbstractMessage{
+public class FileListMessage extends AbstractMessage {
     private String[] files;
 }
