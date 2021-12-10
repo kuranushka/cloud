@@ -67,9 +67,4 @@ public class NettyClient {
     public void sendMessage(FileTransferMessage fileTransferMessage) {
         channel.writeAndFlush(fileTransferMessage);
     }
-
-    public void send() throws IOException {
-
-    }
-
 }

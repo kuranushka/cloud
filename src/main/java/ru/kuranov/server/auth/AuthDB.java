@@ -20,7 +20,7 @@ public class AuthDB extends DBConnections {
         }
     }
 
-    public AuthMessage auth(AuthMessage msg) {
+    public boolean auth(AuthMessage msg) {
         try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "-1Password*)")) {
             if (conn != null) {
                 log.debug("Connection to DB is Up");
@@ -35,13 +35,13 @@ public class AuthDB extends DBConnections {
                     }
                 }
                 conn.close();
-                return msg;
+                return true;
             } else {
                 log.debug("Connection to DB is not established");
             }
         } catch (SQLException e) {
             System.err.format("SQL state: %s\n%s", e.getSQLState(), e.getMessage());
         }
-        return msg;
+        return false;
     }
 }
