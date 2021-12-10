@@ -61,7 +61,7 @@ public class ClientStart extends Application {
             nettyClient.sendMessage(authMessage);
 
             try {
-                Thread.sleep(500);// задержка на отправку и возврат авторизации из базы
+                Thread.sleep(1000);// задержка на отправку и возврат авторизации из базы
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
