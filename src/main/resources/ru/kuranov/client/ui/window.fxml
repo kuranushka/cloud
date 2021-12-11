@@ -9,8 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="559.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.kuranov.client.ui.Window">
-    <HBox alignment="TOP_CENTER" prefHeight="32.0" prefWidth="700.0">
+<AnchorPane prefHeight="560.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.kuranov.client.ui.Window">
+    <HBox alignment="TOP_CENTER" prefHeight="32.0" prefWidth="850.0">
         <Label text="Cloud Storage">
             <font>
                 <Font size="20.0" />
@@ -20,7 +20,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
         </padding>
     </HBox>
-    <HBox alignment="TOP_CENTER" layoutY="26.0" prefHeight="18.0" prefWidth="700.0">
+    <HBox alignment="TOP_CENTER" layoutY="26.0" prefHeight="27.0" prefWidth="850.0">
         <VBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
             <Label fx:id="myComputerLabel" text="My computer">
                 <padding>
@@ -43,9 +43,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
         </padding>
     </HBox>
-    <HBox layoutX="-2.0" layoutY="52.0" prefHeight="508.0" prefWidth="700.0">
+    <HBox layoutX="-2.0" layoutY="52.0" prefHeight="508.0" prefWidth="850.0">
 
-        <VBox prefHeight="347.0" prefWidth="316.0">
+        <VBox prefHeight="498.0" prefWidth="367.0">
 
             <ListView fx:id="homeFileList" prefHeight="349.0" prefWidth="304.0" VBox.vgrow="ALWAYS" />
 
@@ -53,46 +53,67 @@
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding>
         </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="347.0" prefWidth="105.0">
+        <VBox alignment="TOP_CENTER" prefHeight="498.0" prefWidth="145.0">
 
-            <Button fx:id="buttonUpDirectory" minWidth="70.0" mnemonicParsing="false" text="↑↑">
+            <Button fx:id="buttonUpDirectory" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="145.0" text="↑↑">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonOpenFile" minWidth="70.0" mnemonicParsing="false" text="open">
+            <Button fx:id="buttonOpenFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="146.0" text="open">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonCreateFile" minWidth="70.0" mnemonicParsing="false" text="create">
+            <Button fx:id="buttonCreateFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="create">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonReceiveFile" minWidth="70.0" mnemonicParsing="false" text="&lt;&lt;">
+            <Button fx:id="buttonReceiveFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="142.0" text="download">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonSendFile" minWidth="70.0" mnemonicParsing="false" text="&gt;&gt;">
+            <Button fx:id="buttonSendFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="131.0" text="upload">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonRenameFile" minWidth="70.0" mnemonicParsing="false" text="rename">
+            <Button fx:id="buttonRenameFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="145.0" text="rename">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
-            <Button fx:id="buttonDeleteFile" minWidth="70.0" mnemonicParsing="false" text="delete">
+            <Button fx:id="buttonDeleteFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="170.0" text="delete">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
+            <font>
+               <Font size="11.0" />
+            </font>
             </Button>
 
         </VBox>
-        <VBox prefHeight="347.0" prefWidth="315.0">
+        <VBox prefHeight="498.0" prefWidth="377.0">
 
             <ListView fx:id="serverFileList" prefHeight="353.0" prefWidth="303.0" VBox.vgrow="ALWAYS" />
 

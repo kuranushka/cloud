@@ -2,30 +2,27 @@ package ru.kuranov.client.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.auth.Authentication;
-import ru.kuranov.client.msg.AbstractMessage;
-import ru.kuranov.client.msg.AuthMessage;
-import ru.kuranov.client.msg.FileListMessage;
-import ru.kuranov.client.msg.FileTransferMessage;
+import ru.kuranov.client.msg.*;
 import ru.kuranov.client.net.NettyClient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 @Slf4j
+@Data
 public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
     private static ClientMessageHandler instance;
     private final OnMessageReceived callback;
-    private final NettyClient nettyClient;
+    private final NettyClient netty;
     private AbstractMessage msg;
     private String[] serverFiles;
+    private File rootDirectory;
 
     private ClientMessageHandler(OnMessageReceived callback) {
         this.callback = callback;
-        nettyClient = NettyClient.getInstance(System.out::println);
+        netty = NettyClient.getInstance(System.out::println);
     }
 
     public static ClientMessageHandler getInstance(OnMessageReceived callback) {
@@ -41,6 +38,10 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
         auth(msg);
         readServerFileList(msg);
+
+        if (msg.getClass() == FileSendMessage.class) {
+            saveFile(msg);
+        }
     }
 
     private void readServerFileList(AbstractMessage msg) {
@@ -49,10 +50,9 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
         }
     }
 
-    public String[] getServerFiles() {
+    public String[] getServerFileList() {
         return serverFiles;
     }
-
 
     private void auth(AbstractMessage msg) {
         if (msg.getClass() == AuthMessage.class && ((AuthMessage) msg).isAuth()) {
@@ -78,8 +78,26 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
             log.debug("File not read or not buffered ...", e);
         }
         log.debug("Read file {}", file.getName());
-        FileTransferMessage fileTransferMessage = new FileTransferMessage(file.getName(), Command.SEND, Direction.TRANSFER_TO_SERVER, buf);
-        nettyClient.sendMessage(fileTransferMessage);
+        FileSendMessage fileSendMessage = new FileSendMessage(file.getName(), Command.SEND, Direction.TRANSFER_TO_SERVER, buf);
+        netty.sendMessage(fileSendMessage);
         log.debug("Send file {}", file.getName());
+    }
+
+    public void getServerFile(String file) {
+        FileReceiveMessage message = new FileReceiveMessage(file);
+        netty.sendMessage(message);
+    }
+
+    public void saveFile(AbstractMessage msg) {
+        File file = new File(rootDirectory.toString() + "/" + ((FileSendMessage) msg).getFile());
+        log.debug("Try to save file {} in {}", file, rootDirectory.toString());
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] buf = ((FileSendMessage) msg).getByf();
+            fos.write(buf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("File {} saved", file);
     }
 }

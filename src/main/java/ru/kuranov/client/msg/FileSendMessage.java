@@ -9,7 +9,7 @@ import ru.kuranov.client.handler.Direction;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class FileTransferMessage extends AbstractMessage {
+public class FileSendMessage extends AbstractMessage {
     private String file;
     private Command command;
     private Direction direction;

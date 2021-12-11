@@ -6,7 +6,7 @@ import ru.kuranov.client.msg.AuthMessage;
 import java.sql.*;
 
 @Slf4j
-public class AuthDB extends DBConnections {
+public class AuthDB{
     private static AuthDB instance;
 
     private AuthDB() {

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class StringMessage extends AbstractMessage {
-    private String content;
-    private LocalDate time;
+public class FileReceiveMessage extends AbstractMessage {
+    private String file;
 }

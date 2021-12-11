@@ -49,6 +49,54 @@ public class Window implements Initializable {
 
         handler = ClientMessageHandler.getInstance(callback);
         rootDirectory = new File(".");
+
+        showClientFiles();
+        showServerFiles();
+
+        // отправить файл на сервер
+        buttonSendFile.setOnAction(event -> {
+            handler.sendFile(selectedHomeFile);
+            showServerFiles();
+        });
+
+        // принять файл с сервера
+        buttonReceiveFile.setOnAction(event -> {
+            handler.setRootDirectory(rootDirectory);
+            log.debug("Catch {}", selectedServerFile);
+            handler.getServerFile(selectedServerFile);
+            showClientFiles();
+        });
+    }
+
+    private void showServerFiles(){
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log.debug("Try show server files");
+        serverFiles = handler.getServerFileList();
+        itemsServer = FXCollections.observableArrayList(serverFiles);
+        serverFileList.setItems(itemsServer);
+        serverFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        log.debug("ServerFiles: {}", Arrays.toString(serverFiles));
+        serverFileList.getSelectionModel().getSelectedItems().addListener(
+                (ListChangeListener.Change<? extends String> change) ->
+                {
+                    ObservableList<String> oList = serverFileList.getSelectionModel().getSelectedItems();
+                    log.debug("Server ObservableList: {}", oList);
+
+                    selectedServerFile = oList.get(0);
+                    log.debug("Server Selected files: {}", selectedServerFile);
+                });
+    }
+
+    private void showClientFiles(){
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         homeFiles = rootDirectory.list();
         itemsHome = FXCollections.observableArrayList(homeFiles);
         homeFileList.setItems(itemsHome);
@@ -63,35 +111,6 @@ public class Window implements Initializable {
 
                     selectedHomeFile = oList.get(0);
                     log.debug("Selected files: {}", selectedHomeFile);
-                });
-        showServerFiles();
-
-        buttonSendFile.setOnAction(event -> {
-            handler.sendFile(selectedHomeFile);
-            showServerFiles();
-        });
-    }
-
-    private void showServerFiles(){
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        log.debug("Try show server files");
-        serverFiles = handler.getServerFiles();
-        itemsServer = FXCollections.observableArrayList(serverFiles);
-        serverFileList.setItems(itemsServer);
-        serverFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        log.debug("ServerFiles: {}", Arrays.toString(serverFiles));
-        serverFileList.getSelectionModel().getSelectedItems().addListener(
-                (ListChangeListener.Change<? extends String> change) ->
-                {
-                    ObservableList<String> oList = serverFileList.getSelectionModel().getSelectedItems();
-                    log.debug("Server ObservableList: {}", oList);
-
-                    selectedServerFile = oList.get(0);
-                    log.debug("Server Selected files: {}", selectedServerFile);
                 });
     }
 }
