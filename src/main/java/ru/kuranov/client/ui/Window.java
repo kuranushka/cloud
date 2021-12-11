@@ -3,8 +3,18 @@ package ru.kuranov.client.ui;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
@@ -12,6 +22,7 @@ import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.net.NettyClient;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -68,7 +79,8 @@ public class Window implements Initializable {
         });
     }
 
-    private void showServerFiles(){
+    private void showServerFiles() {
+        selectedHomeFile = null;
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -91,7 +103,8 @@ public class Window implements Initializable {
                 });
     }
 
-    private void showClientFiles(){
+    private void showClientFiles() {
+        selectedServerFile = null;
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -112,5 +125,40 @@ public class Window implements Initializable {
                     selectedHomeFile = oList.get(0);
                     log.debug("Selected files: {}", selectedHomeFile);
                 });
+    }
+
+    public void renameFile(ActionEvent event) throws IOException {
+        log.debug("Home file: " + selectedHomeFile + " Server file: " + selectedServerFile);
+        if(selectedHomeFile != null && selectedServerFile == null) {
+            handler.setClientRenamedFile(selectedHomeFile);
+            handler.setServerRenamedFile(null);
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(Rename.class.getResource("rename.fxml"));
+            stage.setScene(new Scene(root));
+            stage.setTitle("Rename " + selectedHomeFile);
+            stage.setResizable(false);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
+        }
+        if(selectedHomeFile == null && selectedServerFile != null) {
+            handler.setServerRenamedFile(selectedServerFile);
+            handler.setClientRenamedFile(null);
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(Rename.class.getResource("rename.fxml"));
+            stage.setScene(new Scene(root));
+            stage.setTitle("Rename " + selectedServerFile);
+            stage.setResizable(false);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
+        }
+
+    }
+
+    public void updateClientFilesList(MouseEvent mouseEvent) {
+        showClientFiles();
+    }
+
+    public void updateServerFilesList(MouseEvent mouseEvent) {
+        showServerFiles();
     }
 }

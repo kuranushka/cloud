@@ -67,9 +67,21 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
             sendFile(ctx, msg);
         }
 
+        if(isAuth && msg.getClass() == FileServerRenameMessage.class) {
+            renameFile(ctx,msg);
+        }
+
 
         log.debug("Received {}", msg);
         sendListFiles(ctx);
+    }
+
+    private void renameFile(ChannelHandlerContext ctx, AbstractMessage msg){
+        String oldName = ((FileServerRenameMessage)msg).getOldName();
+        String newName = ((FileServerRenameMessage)msg).getNewName();
+        File oldFile = new File(directory.toFile() + "/" + oldName);
+        oldFile.renameTo(new File(directory.toFile() + "/" + newName));
+
     }
 
 

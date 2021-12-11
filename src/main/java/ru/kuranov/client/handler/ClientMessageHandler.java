@@ -19,6 +19,8 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     private AbstractMessage msg;
     private String[] serverFiles;
     private File rootDirectory;
+    private String clientRenamedFile;
+    private String serverRenamedFile;
 
     private ClientMessageHandler(OnMessageReceived callback) {
         this.callback = callback;
@@ -99,5 +101,15 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
             e.printStackTrace();
         }
         log.debug("File {} saved", file);
+    }
+
+    public void renameClientFile(String oldName, String newName) {
+        File oldFile = new File(oldName);
+        oldFile.renameTo(new File(newName));
+    }
+
+    public void renameServerFile(String oldName, String newName) {
+        FileServerRenameMessage message = new FileServerRenameMessage(oldName,newName);
+        netty.sendMessage(message);
     }
 }

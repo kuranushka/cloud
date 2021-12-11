@@ -16,6 +16,7 @@ import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.msg.FileSendMessage;
 import ru.kuranov.client.msg.FileReceiveMessage;
+import ru.kuranov.client.msg.FileServerRenameMessage;
 
 @Slf4j
 public class NettyClient {
@@ -64,11 +65,15 @@ public class NettyClient {
         channel.writeAndFlush(message);
     }
 
-    public void sendMessage(AuthMessage authMessage) {
-        channel.writeAndFlush(authMessage);
+    public void sendMessage(AuthMessage message) {
+        channel.writeAndFlush(message);
     }
 
-    public void sendMessage(FileSendMessage fileSendMessage) {
-        channel.writeAndFlush(fileSendMessage);
+    public void sendMessage(FileSendMessage message) {
+        channel.writeAndFlush(message);
+    }
+
+    public void sendMessage(FileServerRenameMessage message) {
+        channel.writeAndFlush(message);
     }
 }
