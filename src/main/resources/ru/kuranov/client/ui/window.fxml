@@ -63,7 +63,7 @@
                <Font size="11.0" />
             </font>
             </Button>
-            <Button fx:id="buttonOpenFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="146.0" text="open">
+            <Button fx:id="buttonOpenFile" onAction="#openFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="146.0" text="open">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
@@ -71,7 +71,7 @@
                <Font size="11.0" />
             </font>
             </Button>
-            <Button fx:id="buttonCreateFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="create">
+            <Button fx:id="buttonCreateFile" onAction="#createFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="create">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>

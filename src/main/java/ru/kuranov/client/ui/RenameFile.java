@@ -13,7 +13,7 @@ import ru.kuranov.client.handler.OnMessageReceived;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Rename implements Initializable {
+public class RenameFile implements Initializable {
     public Label renameLabel;
     public TextField renameField;
     public Button renameButton;

@@ -10,8 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,6 +20,7 @@ import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.net.NettyClient;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -129,22 +129,22 @@ public class Window implements Initializable {
 
     public void renameFile(ActionEvent event) throws IOException {
         log.debug("Home file: " + selectedHomeFile + " Server file: " + selectedServerFile);
-        if(selectedHomeFile != null && selectedServerFile == null) {
+        if (selectedHomeFile != null && selectedServerFile == null) {
             handler.setClientRenamedFile(selectedHomeFile);
             handler.setServerRenamedFile(null);
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(Rename.class.getResource("rename.fxml"));
+            Parent root = FXMLLoader.load(RenameFile.class.getResource("rename.fxml"));
             stage.setScene(new Scene(root));
             stage.setTitle("Rename " + selectedHomeFile);
             stage.setResizable(false);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
         }
-        if(selectedHomeFile == null && selectedServerFile != null) {
+        if (selectedHomeFile == null && selectedServerFile != null) {
             handler.setServerRenamedFile(selectedServerFile);
             handler.setClientRenamedFile(null);
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(Rename.class.getResource("rename.fxml"));
+            Parent root = FXMLLoader.load(RenameFile.class.getResource("rename.fxml"));
             stage.setScene(new Scene(root));
             stage.setTitle("Rename " + selectedServerFile);
             stage.setResizable(false);
@@ -160,5 +160,30 @@ public class Window implements Initializable {
 
     public void updateServerFilesList(MouseEvent mouseEvent) {
         showServerFiles();
+    }
+
+    public void openFile(ActionEvent event) {
+        if (selectedHomeFile != null && selectedServerFile == null) {
+            try {
+                Desktop.getDesktop().open(new File(selectedHomeFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "You can only open files from your computer");
+            alert.show();
+        }
+
+    }
+
+    public void createFile(ActionEvent event) throws IOException {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(CreateFile.class.getResource("create.fxml"));
+            stage.setScene(new Scene(root));
+            stage.setTitle("Create file");
+            stage.setResizable(false);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
+
     }
 }
