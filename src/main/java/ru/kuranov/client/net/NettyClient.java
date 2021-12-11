@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
 import ru.kuranov.client.msg.AuthMessage;
-import ru.kuranov.client.msg.FileSendMessage;
 import ru.kuranov.client.msg.FileReceiveMessage;
+import ru.kuranov.client.msg.FileSendMessage;
 import ru.kuranov.client.msg.FileServerRenameMessage;
 
 @Slf4j
@@ -24,14 +24,6 @@ public class NettyClient {
     static NettyClient instance;
     SocketChannel channel;
 
-    public static NettyClient getInstance(OnMessageReceived callback){
-        if(instance == null) {
-            instance = new NettyClient(callback);
-            return instance;
-        } else {
-            return instance;
-        }
-    }
     private NettyClient(OnMessageReceived callback) {
         NettyClient.callback = callback;
         new Thread(() -> {
@@ -49,7 +41,7 @@ public class NettyClient {
                                         new ObjectEncoder(),
                                         //new ClientMessageHandler(callback),
                                         ClientMessageHandler.getInstance(callback)
-                                        );
+                                );
                             }
                         }).connect("localhost", 8189).sync();
                 future.channel().closeFuture().sync();
@@ -59,6 +51,15 @@ public class NettyClient {
                 group.shutdownGracefully();
             }
         }).start();
+    }
+
+    public static NettyClient getInstance(OnMessageReceived callback) {
+        if (instance == null) {
+            instance = new NettyClient(callback);
+            return instance;
+        } else {
+            return instance;
+        }
     }
 
     public void sendMessage(FileReceiveMessage message) {

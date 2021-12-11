@@ -28,11 +28,11 @@ public class RenameFile implements Initializable {
         handler = ClientMessageHandler.getInstance(callback);
         clientOldName = handler.getClientRenamedFile();
         serverOldName = handler.getServerRenamedFile();
-        if(clientOldName != null && serverOldName == null){
+        if (clientOldName != null && serverOldName == null) {
             renameLabel.setText("Rename " + handler.getClientRenamedFile() + " on computer?");
             renameField.setText(clientOldName);
         }
-        if(clientOldName == null && serverOldName != null){
+        if (clientOldName == null && serverOldName != null) {
             renameLabel.setText("Rename " + handler.getServerRenamedFile() + " on server?");
             renameField.setText(serverOldName);
         }

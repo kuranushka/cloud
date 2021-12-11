@@ -86,7 +86,6 @@ public class Window implements Initializable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.debug("Try show server files");
         serverFiles = handler.getServerFileList();
         itemsServer = FXCollections.observableArrayList(serverFiles);
         serverFileList.setItems(itemsServer);
@@ -177,13 +176,29 @@ public class Window implements Initializable {
     }
 
     public void createFile(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(CreateFile.class.getResource("create.fxml"));
+        stage.setScene(new Scene(root));
+        stage.setTitle("Create file");
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
+
+    }
+
+    public void deleteFile(ActionEvent event) throws IOException {
+        if (selectedHomeFile != null && selectedServerFile == null) {
+            handler.setClientDeletedFile(selectedHomeFile);
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(CreateFile.class.getResource("create.fxml"));
+            Parent root = FXMLLoader.load(DeleteFile.class.getResource("delete.fxml"));
             stage.setScene(new Scene(root));
-            stage.setTitle("Create file");
+            stage.setTitle("Delete " + selectedHomeFile + " ?");
             stage.setResizable(false);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
-
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "You can only delete files from your computer");
+            alert.show();
+        }
     }
 }

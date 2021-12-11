@@ -67,8 +67,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
             sendFile(ctx, msg);
         }
 
-        if(isAuth && msg.getClass() == FileServerRenameMessage.class) {
-            renameFile(ctx,msg);
+        if (isAuth && msg.getClass() == FileServerRenameMessage.class) {
+            renameFile(ctx, msg);
         }
 
 
@@ -76,9 +76,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         sendListFiles(ctx);
     }
 
-    private void renameFile(ChannelHandlerContext ctx, AbstractMessage msg){
-        String oldName = ((FileServerRenameMessage)msg).getOldName();
-        String newName = ((FileServerRenameMessage)msg).getNewName();
+    private void renameFile(ChannelHandlerContext ctx, AbstractMessage msg) {
+        String oldName = ((FileServerRenameMessage) msg).getOldName();
+        String newName = ((FileServerRenameMessage) msg).getNewName();
         File oldFile = new File(directory.toFile() + "/" + oldName);
         oldFile.renameTo(new File(directory.toFile() + "/" + newName));
 
@@ -93,7 +93,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
             FileInputStream fis = new FileInputStream(directory.toFile() + "/" + fileName);
             byte[] buf = new byte[fis.available()];
             fis.read(buf);
-            FileSendMessage message = new FileSendMessage(fileName, Command.SEND, Direction.TRANSFER_FROM_SERVER,buf);
+            FileSendMessage message = new FileSendMessage(fileName, Command.SEND, Direction.TRANSFER_FROM_SERVER, buf);
             ctx.writeAndFlush(message);
         } catch (IOException e) {
             e.printStackTrace();
