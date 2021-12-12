@@ -1,5 +1,6 @@
 package ru.kuranov.client.ui;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,8 +25,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -43,6 +48,7 @@ public class Window implements Initializable {
     public Button buttonCreateFile;
     public Label myComputerLabel;
     public Label cloudStorageLabel;
+    public TableView<FileInfo> clientTable;
     private File rootDirectory;
     private String[] homeFiles;
     private String[] serverFiles;
@@ -57,6 +63,34 @@ public class Window implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        TableColumn<FileInfo, String> fileTypeColumn = new TableColumn<>("Type");
+        fileTypeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getType().getName()));
+        fileTypeColumn.setPrefWidth(60);
+
+        TableColumn<FileInfo, String> fileNameColumn = new TableColumn<>("Name");
+        fileNameColumn.setCellValueFactory  (param -> new SimpleStringProperty(param.getValue().getFilename()));
+        fileNameColumn.setPrefWidth(550);
+
+        TableColumn<FileInfo, String> fileSizeColumn = new TableColumn<>("Size");
+        fileSizeColumn.setCellValueFactory  (param -> new SimpleStringProperty(String.valueOf(param.getValue().getSize()/1024)));
+        fileSizeColumn.setPrefWidth(100);
+
+        TableColumn<FileInfo, String> fileDateColumn = new TableColumn<>("Date");
+        fileDateColumn.setCellValueFactory  (param -> new SimpleStringProperty(String.valueOf(param.getValue().getLastModified())));
+        fileDateColumn.setPrefWidth(100);
+
+
+        clientTable.getColumns().addAll(fileTypeColumn,fileNameColumn,fileSizeColumn,fileDateColumn);
+        clientTable.getSortOrder().add(fileTypeColumn);
+        Path path = Paths.get("C://");
+        tableView(path);
+
+
+
+
+
+
 
         handler = ClientMessageHandler.getInstance(callback);
         rootDirectory = new File(".");
@@ -77,6 +111,16 @@ public class Window implements Initializable {
             handler.getServerFile(selectedServerFile);
             showClientFiles();
         });
+    }
+
+    private void tableView(Path path) {
+        try {
+            clientTable.getItems().clear();
+            clientTable.getItems().addAll(Files.list(path).map(FileInfo::new).collect(Collectors.toList()));
+            clientTable.sort();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showServerFiles() {
