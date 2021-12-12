@@ -47,7 +47,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
                 }
                 // возвращаем авторизацию клиенту
                 ctx.writeAndFlush(msg);
-                //ctx.writeAndFlush(connection.auth((AuthMessage) msg));
             }
         }
 
@@ -75,7 +74,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         if (isAuth && msg.getClass() == FileServerDelete.class) {
             deleteFile(msg);
         }
-
         log.debug("Received {}", msg);
         sendListFiles(ctx);
     }
@@ -96,8 +94,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //File oldFile = new File(directory.toFile() + "/" + oldName);
-        //oldFile.renameTo(new File(directory.toFile() + "/" + newName));
     }
 
     private void createFile(AbstractMessage msg) {
