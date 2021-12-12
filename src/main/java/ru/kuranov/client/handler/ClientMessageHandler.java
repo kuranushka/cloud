@@ -9,6 +9,8 @@ import ru.kuranov.client.msg.*;
 import ru.kuranov.client.net.NettyClient;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Slf4j
 @Data
@@ -23,6 +25,7 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     private String serverRenamedFile;
     private String clientCreatedFile;
     private String clientDeletedFile;
+    private String serverDeletedFile;
 
     private ClientMessageHandler(OnMessageReceived callback) {
         this.callback = callback;
@@ -82,7 +85,7 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
             log.debug("File not read or not buffered ...", e);
         }
         log.debug("Read file {}", file.getName());
-        FileSendMessage fileSendMessage = new FileSendMessage(file.getName(), Command.SEND, Direction.TRANSFER_TO_SERVER, buf);
+        FileSendMessage fileSendMessage = new FileSendMessage(file.getName(), buf);
         netty.sendMessage(fileSendMessage);
         log.debug("Send file {}", file.getName());
     }
@@ -106,8 +109,13 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     }
 
     public void renameClientFile(String oldName, String newName) {
-        File oldFile = new File(oldName);
-        oldFile.renameTo(new File(newName));
+        try {
+            Files.move(Paths.get(oldName), Paths.get(newName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //File oldFile = new File(oldName);
+        //oldFile.renameTo(new File(newName));
     }
 
     public void renameServerFile(String oldName, String newName) {
@@ -115,7 +123,7 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
         netty.sendMessage(message);
     }
 
-    public void createFile(String s) {
+    public void createFileOnComp(String s) {
         File file = new File(s);
         try {
             file.createNewFile();
@@ -124,8 +132,21 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
         }
     }
 
-    public void deleteFile(String s) {
-        File file = new File(s);
-        file.delete();
+    public void createFileOnServer(String s) {
+        FileServerCreate fileServerCreate = new FileServerCreate(s);
+        netty.sendMessage(fileServerCreate);
+    }
+
+    public void deleteClientFile(String s) {
+        try {
+            Files.deleteIfExists(Paths.get(s));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteServerFile(String s) {
+        FileServerDelete fileServerDelete = new FileServerDelete(s);
+        netty.sendMessage(fileServerDelete);
     }
 }

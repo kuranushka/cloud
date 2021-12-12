@@ -18,17 +18,29 @@ public class DeleteFile implements Initializable {
     public Button deleteButtonNo;
     private ClientMessageHandler handler;
     private OnMessageReceived callback;
-    private String file;
+    private String clientDeleteFile;
+    private String serverDeleteFile;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         handler = ClientMessageHandler.getInstance(callback);
-        file = handler.getClientDeletedFile();
-        deleteLabel.setText("Delete " + file + " ?");
+        clientDeleteFile = handler.getClientDeletedFile();
+        serverDeleteFile = handler.getServerDeletedFile();
+        if (clientDeleteFile != null && serverDeleteFile == null) {
+            deleteLabel.setText("Delete " + clientDeleteFile + " ?");
+        }
+        if (clientDeleteFile == null && serverDeleteFile != null) {
+            deleteLabel.setText("Delete " + serverDeleteFile + " ?");
+        }
     }
 
     public void yesDelete(ActionEvent event) {
-        handler.deleteFile(file);
+        if (clientDeleteFile != null && serverDeleteFile == null) {
+            handler.deleteClientFile(clientDeleteFile);
+        }
+        if (clientDeleteFile == null && serverDeleteFile != null) {
+            handler.deleteServerFile(serverDeleteFile);
+        }
         Window window = ((Node) event.getSource()).getScene().getWindow();
         window.hide();
     }

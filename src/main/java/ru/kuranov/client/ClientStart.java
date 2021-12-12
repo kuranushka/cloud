@@ -1,4 +1,4 @@
-package ru.kuranov.client.ui;
+package ru.kuranov.client;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -13,10 +13,11 @@ import javafx.stage.Stage;
 import ru.kuranov.client.auth.Authentication;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
+import ru.kuranov.client.ui.Auth;
 
 import java.io.IOException;
 
-public class AppStarter extends Application {
+public class ClientStart extends Application {
 
     public Label label;
     public Button sendAuthButton;

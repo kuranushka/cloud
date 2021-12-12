@@ -41,14 +41,12 @@ public class RenameFile implements Initializable {
     public void rename(ActionEvent event) {
         if (clientOldName != null && serverOldName == null) {
             handler.renameClientFile(clientOldName, renameField.getText());
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            window.hide();
         }
 
         if (clientOldName == null && serverOldName != null) {
             handler.renameServerFile(serverOldName, renameField.getText());
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            window.hide();
         }
+        Window window = ((Node) event.getSource()).getScene().getWindow();
+        window.hide();
     }
 }

@@ -3,8 +3,6 @@ package ru.kuranov.server.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
-import ru.kuranov.client.handler.Command;
-import ru.kuranov.client.handler.Direction;
 import ru.kuranov.client.msg.*;
 import ru.kuranov.server.auth.AuthDB;
 
@@ -30,9 +28,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
         if (!isAuth) {
             // авторизация в базе данных
-            if (msg.getClass() == AuthMessage.class
-                    && !((AuthMessage) msg).isAuth()
-                    && !((AuthMessage) msg).isNewUser()) {
+            if (msg.getClass() == AuthMessage.class && !((AuthMessage) msg).isAuth() && !((AuthMessage) msg).isNewUser()) {
                 connection = AuthDB.getInstance();
                 isAuth = connection.auth((AuthMessage) msg);
                 path = Paths.get("." + ((AuthMessage) msg).getUser());
@@ -57,31 +53,60 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
 
         // приём файла
-        if (isAuth
-                && msg.getClass() == FileSendMessage.class
-                && (((FileSendMessage) msg).getCommand() == Command.SEND)) {
+        if (isAuth && msg.getClass() == FileSendMessage.class) {
             receiveFile(ctx, msg);
         }
 
+        // отправка файла
         if (isAuth && msg.getClass() == FileReceiveMessage.class) {
             sendFile(ctx, msg);
         }
 
+        // переименование файла
         if (isAuth && msg.getClass() == FileServerRenameMessage.class) {
-            renameFile(ctx, msg);
+            renameFile(msg);
         }
 
+        // создание файла
+        if (isAuth && msg.getClass() == FileServerCreate.class) {
+            createFile(msg);
+        }
+
+        if (isAuth && msg.getClass() == FileServerDelete.class) {
+            deleteFile(msg);
+        }
 
         log.debug("Received {}", msg);
         sendListFiles(ctx);
     }
 
-    private void renameFile(ChannelHandlerContext ctx, AbstractMessage msg) {
+    private void deleteFile(AbstractMessage msg) {
+        try {
+            Files.deleteIfExists(Paths.get(directory.toFile() + "/" + ((FileServerDelete) msg).getFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void renameFile(AbstractMessage msg) {
         String oldName = ((FileServerRenameMessage) msg).getOldName();
         String newName = ((FileServerRenameMessage) msg).getNewName();
-        File oldFile = new File(directory.toFile() + "/" + oldName);
-        oldFile.renameTo(new File(directory.toFile() + "/" + newName));
+        try {
+            Files.move(Paths.get(directory.toFile() + "/" + oldName), Paths.get(directory.toFile() + "/" + newName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //File oldFile = new File(directory.toFile() + "/" + oldName);
+        //oldFile.renameTo(new File(directory.toFile() + "/" + newName));
+    }
 
+    private void createFile(AbstractMessage msg) {
+        File file = new File(directory.toFile() + "/" + ((FileServerCreate) msg).getFile());
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -93,7 +118,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
             FileInputStream fis = new FileInputStream(directory.toFile() + "/" + fileName);
             byte[] buf = new byte[fis.available()];
             fis.read(buf);
-            FileSendMessage message = new FileSendMessage(fileName, Command.SEND, Direction.TRANSFER_FROM_SERVER, buf);
+            FileSendMessage message = new FileSendMessage(fileName, buf);
             ctx.writeAndFlush(message);
         } catch (IOException e) {
             e.printStackTrace();

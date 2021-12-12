@@ -13,10 +13,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
-import ru.kuranov.client.msg.AuthMessage;
-import ru.kuranov.client.msg.FileReceiveMessage;
-import ru.kuranov.client.msg.FileSendMessage;
-import ru.kuranov.client.msg.FileServerRenameMessage;
+import ru.kuranov.client.msg.*;
 
 @Slf4j
 public class NettyClient {
@@ -75,6 +72,14 @@ public class NettyClient {
     }
 
     public void sendMessage(FileServerRenameMessage message) {
+        channel.writeAndFlush(message);
+    }
+
+    public void sendMessage(FileServerCreate message) {
+        channel.writeAndFlush(message);
+    }
+
+    public void sendMessage(FileServerDelete message) {
         channel.writeAndFlush(message);
     }
 }

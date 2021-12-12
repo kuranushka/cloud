@@ -168,7 +168,9 @@ public class Window implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+
+        if (selectedHomeFile == null && selectedServerFile != null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "You can only open files from your computer");
             alert.show();
         }
@@ -196,9 +198,17 @@ public class Window implements Initializable {
             stage.setResizable(false);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "You can only delete files from your computer");
-            alert.show();
+        }
+
+        if (selectedHomeFile == null && selectedServerFile != null) {
+            handler.setServerDeletedFile(selectedServerFile);
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(DeleteFile.class.getResource("delete.fxml"));
+            stage.setScene(new Scene(root));
+            stage.setTitle("Delete " + selectedServerFile + " ?");
+            stage.setResizable(false);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
         }
     }
 }
