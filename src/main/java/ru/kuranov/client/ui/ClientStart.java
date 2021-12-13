@@ -1,4 +1,4 @@
-package ru.kuranov.client;
+package ru.kuranov.client.ui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
