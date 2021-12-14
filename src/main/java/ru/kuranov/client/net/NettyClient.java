@@ -82,4 +82,9 @@ public class NettyClient {
     public void sendMessage(FileServerDelete message) {
         channel.writeAndFlush(message);
     }
+
+
+
+    public void sendMessageNew(Message message) {
+    }
 }

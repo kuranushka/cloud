@@ -18,13 +18,20 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
+import ru.kuranov.client.msg.Command;
+import ru.kuranov.client.msg.Message;
 import ru.kuranov.client.net.NettyClient;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Slf4j
@@ -51,12 +58,17 @@ public class Window implements Initializable {
     private String selectedServerFile;
     private ObservableList<String> itemsHome;
     private ObservableList<String> itemsServer;
-    private NettyClient nettyClient;
+    private NettyClient netty;
     private ClientMessageHandler handler;
     private OnMessageReceived callback;
+    //NEW
+    private Path root;
+    private boolean isSelectClientFileNew;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        root = Paths.get(System.getProperty("user.home"));
         handler = ClientMessageHandler.getInstance(callback);
         rootDirectory = new File(".");
 
@@ -211,4 +223,143 @@ public class Window implements Initializable {
             stage.show();
         }
     }
+
+    //NEW
+    public void deleteNew(ActionEvent event) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("delete file");
+            alert.setHeaderText("delete " + selectedHomeFile + "?");
+            alert.show();
+
+            // Make this
+/*
+        Optional<ButtonType> result = alert.showAndWait();
+        if(!result.isPresent())
+        // alert is exited, no button has been pressed.
+        else if(result.get() == ButtonType.OK)
+        //oke button is pressed
+        else if(result.get() == ButtonType.CANCEL)
+            // cancel button is pressed
+            */
+
+
+            /*Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }*/
+            log.debug("delete");
+
+    }
+
+    //NEW
+    public void newFileNew(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog("newFile");
+        dialog.setTitle("create new file");
+        dialog.setHeaderText("create ?");
+
+        ComboBox comboBox = new ComboBox<String>();
+        ObservableList<String> oList = FXCollections.observableArrayList();
+        oList.addAll("File on Client", "Directory on Client", "File on Server", "Directory on Server");
+        comboBox.setItems(oList);
+        comboBox.getSelectionModel().selectFirst();
+        dialog.setGraphic(comboBox);
+
+        comboBox.setOnAction(e -> {
+            Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }
+            switch ((String) comboBox.getValue()) {
+                case "File on Client":
+                    try {
+                        Files.createFile(Paths.get(root.toString() + "/" + entered));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                case "Directory on Client":
+                    try {
+                        Files.createDirectory(Paths.get(root.toString() + "/" + entered));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                case "File on Server":
+                    netty.sendMessageNew(new Message(entered, Command.NEW_FILE));
+                case "Directory on Server":
+                    netty.sendMessageNew(new Message(entered, Command.NEW_DIRECTORY));
+            }
+        });
+
+
+    }
+
+    //NEW
+    public void uploadNew(ActionEvent event) {
+        if (isSelectClientFileNew) {
+            TextInputDialog dialog = new TextInputDialog(selectedHomeFile);
+            dialog.setTitle("upload file");
+            dialog.setHeaderText("upload " + selectedHomeFile + "?");
+            Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }
+            log.debug(entered);
+            try {
+                FileInputStream fis = new FileInputStream(selectedHomeFile);
+                byte[] buf = new byte[fis.available()];
+                fis.read(buf);
+                netty.sendMessageNew(new Message(selectedHomeFile, Command.UPLOAD, buf));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //NEW
+    public void downloadNew(ActionEvent event) {
+        if (!isSelectClientFileNew) {
+            TextInputDialog dialog = new TextInputDialog(selectedServerFile);
+            dialog.setTitle("download file");
+            dialog.setHeaderText("download " + selectedServerFile + "?");
+            Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }
+            log.debug(entered);
+            netty.sendMessageNew(new Message(selectedServerFile, Command.DOWNLOAD));
+        }
+    }
+
+    //NEW
+    public void renameNew(ActionEvent event) throws IOException {
+        if (isSelectClientFileNew) {
+            TextInputDialog dialog = new TextInputDialog(selectedHomeFile);
+            dialog.setTitle("rename file");
+            dialog.setHeaderText("rename " + selectedHomeFile + "?");
+            Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }
+            log.debug(entered);
+            Files.move(Paths.get(selectedHomeFile), Paths.get(entered));
+        } else {
+            TextInputDialog dialog = new TextInputDialog(selectedServerFile);
+            dialog.setTitle("rename file");
+            dialog.setHeaderText("rename " + selectedServerFile + "?");
+            Optional<String> result = dialog.showAndWait();
+            String entered = "";
+            if (result.isPresent()) {
+                entered = result.get();
+            }
+            log.debug(entered);
+            netty.sendMessageNew(new Message(entered, selectedServerFile, Command.RENAME));
+        }
+
+    }
+
+
 }

@@ -79,7 +79,7 @@
                     <Font size="11.0" />
                 </font>
             </Button>
-            <Button fx:id="buttonReceiveFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="142.0" text="&lt;&lt; download">
+            <Button fx:id="buttonReceiveFile" minWidth="70.0" mnemonicParsing="false" onAction="#downloadNew" prefHeight="26.0" prefWidth="142.0" text="&lt;&lt; download">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
@@ -87,7 +87,7 @@
                     <Font size="11.0" />
                 </font>
             </Button>
-            <Button fx:id="buttonSendFile" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="131.0" text="upload &gt;&gt;">
+            <Button fx:id="buttonSendFile" minWidth="70.0" mnemonicParsing="false" onAction="#uploadNew" prefHeight="26.0" prefWidth="131.0" text="upload &gt;&gt;">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
@@ -111,6 +111,8 @@
                     <Font size="11.0" />
                 </font>
             </Button>
+         <Button mnemonicParsing="false" onAction="#renameNew" text="CATCH" />
+         <Button mnemonicParsing="false" text="deleteNew" onAction="#deleteNew"/>
 
         </VBox>
         <VBox prefHeight="498.0" prefWidth="377.0">
