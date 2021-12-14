@@ -25,7 +25,27 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     private String serverRenamedFile;
     private String clientCreatedFile;
     private String clientDeletedFile;
+
+    public String getClientDeletedFile() {
+        serverDeletedFile = null;
+        return clientDeletedFile;
+    }
+
+    public void setClientDeletedFile(String clientDeletedFile) {
+        this.clientDeletedFile = clientDeletedFile;
+    }
+
+    public void setServerDeletedFile(String serverDeletedFile) {
+        this.serverDeletedFile = serverDeletedFile;
+    }
+
+    public String getServerDeletedFile() {
+        clientDeletedFile = null;
+        return serverDeletedFile;
+    }
+
     private String serverDeletedFile;
+    private boolean isCreateFile;
 
     private ClientMessageHandler(OnMessageReceived callback) {
         this.callback = callback;
@@ -124,16 +144,19 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     }
 
     public void createFileOnComp(String s) {
-        File file = new File(s);
         try {
-            file.createNewFile();
+            if (isCreateFile) {
+                Files.createFile(Paths.get(s));
+            } else {
+                Files.createDirectory(Paths.get(s));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void createFileOnServer(String s) {
-        FileServerCreate fileServerCreate = new FileServerCreate(s);
+        FileServerCreate fileServerCreate = new FileServerCreate(s, isCreateFile);
         netty.sendMessage(fileServerCreate);
     }
 

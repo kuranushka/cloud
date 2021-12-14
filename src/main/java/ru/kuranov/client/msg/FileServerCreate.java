@@ -7,4 +7,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class FileServerCreate extends AbstractMessage {
     private String file;
+    private boolean isFile;
+
+
+    public boolean isFile() {
+        return isFile;
+    }
 }

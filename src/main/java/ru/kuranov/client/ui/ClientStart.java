@@ -5,15 +5,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import ru.kuranov.client.auth.Authentication;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
-import ru.kuranov.client.ui.Auth;
 
 import java.io.IOException;
 
@@ -23,11 +19,13 @@ public class ClientStart extends Application {
     public Button sendAuthButton;
     public TextField user;
     public PasswordField password;
+    public RadioButton radioButton;
     private Stage stage;
     private Scene scene;
     private Parent root;
     private AuthMessage authMessage;
     private NettyClient netty;
+    private boolean isNewUser;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,7 +44,7 @@ public class ClientStart extends Application {
     }
 
     public void send(ActionEvent e) {
-        authMessage = new AuthMessage(false, false, user.getText(), password.getText());
+        authMessage = new AuthMessage(isNewUser, false, user.getText(), password.getText());
         netty = NettyClient.getInstance(System.out::println);
         netty.sendMessage(authMessage);
 
@@ -68,6 +66,14 @@ public class ClientStart extends Application {
             user.clear();
             password.clear();
 
+        }
+    }
+
+    public void newUser(ActionEvent event) {
+        if (radioButton.isSelected()) {
+            isNewUser = true;
+        } else {
+            isNewUser = false;
         }
     }
 }

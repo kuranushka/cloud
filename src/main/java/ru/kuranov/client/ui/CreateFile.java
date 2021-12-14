@@ -19,8 +19,11 @@ public class CreateFile implements Initializable {
     public Button createButton;
     public RadioButton createOnComp;
     public RadioButton createOnServer;
+    public RadioButton fileOnCompButton;
+    public RadioButton fileOnServerButton;
     private ClientMessageHandler handler;
     private OnMessageReceived callback;
+    private boolean isCreateFile;
     private boolean isCreateOnComp;
 
     @Override
@@ -33,6 +36,12 @@ public class CreateFile implements Initializable {
         if (createTextField.getText() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter name file ...");
             alert.show();
+        }
+
+        if (isCreateFile) {
+            handler.setCreateFile(true);
+        } else {
+            handler.setCreateFile(false);
         }
 
         if (isCreateOnComp) {
@@ -54,6 +63,20 @@ public class CreateFile implements Initializable {
         } else {
             isCreateOnComp = false;
             log.debug("Seelected on server");
+        }
+    }
+
+    public void whatToCreate(ActionEvent event) {
+        ToggleGroup group = new ToggleGroup();
+        fileOnCompButton.setToggleGroup(group);
+        fileOnServerButton.setToggleGroup(group);
+        if (fileOnCompButton.isSelected()) {
+            isCreateFile = true;
+            log.debug("Create file");
+        }
+        if (fileOnServerButton.isSelected()) {
+            isCreateFile = false;
+            log.debug("Create directory");
         }
     }
 }

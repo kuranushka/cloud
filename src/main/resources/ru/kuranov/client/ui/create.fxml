@@ -1,49 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="174.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17"
-            fx:controller="ru.kuranov.client.ui.CreateFile">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="174.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.kuranov.client.ui.CreateFile">
 
     <VBox alignment="TOP_CENTER" prefHeight="172.0" prefWidth="438.0">
 
         <Label fx:id="createLabel" text="Label">
             <VBox.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
         </Label>
         <TextField fx:id="createTextField" onAction="#create">
             <VBox.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
         </TextField>
         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
-            <RadioButton mnemonicParsing="false" text="On My Computer" fx:id="createOnComp" onAction="#whereCreateFile">
+            <RadioButton fx:id="createOnComp" mnemonicParsing="false" onAction="#whereCreateFile" text="On My Computer">
                 <HBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </HBox.margin>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="On Cloud Storage" fx:id="createOnServer"
-                         onAction="#whereCreateFile">
+            <RadioButton fx:id="createOnServer" mnemonicParsing="false" onAction="#whereCreateFile" text="On Cloud Storage">
                 <HBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </HBox.margin>
             </RadioButton>
             <VBox.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </HBox>
+      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <RadioButton mnemonicParsing="false" text="Create File" fx:id="fileOnCompButton" onAction="#whatToCreate">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </RadioButton>
+            <RadioButton mnemonicParsing="false" text="Create Directory" fx:id="fileOnServerButton" onAction="#whatToCreate">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </RadioButton>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
         <Button fx:id="createButton" mnemonicParsing="false" onAction="#create" text="create">
             <VBox.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
         </Button>
         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
         </padding>
     </VBox>
 </AnchorPane>

@@ -28,14 +28,18 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
         if (!isAuth) {
             // авторизация в базе данных
-            if (msg.getClass() == AuthMessage.class && !((AuthMessage) msg).isAuth() && !((AuthMessage) msg).isNewUser()) {
+            if (msg.getClass() == AuthMessage.class) {
                 connection = AuthDB.getInstance();
                 isAuth = connection.auth((AuthMessage) msg);
+                if (!isAuth) {
+                    return;
+                }
                 path = Paths.get("." + ((AuthMessage) msg).getUser());
                 file = new File("." + ((AuthMessage) msg).getUser());
 
+
                 // создание папки пользователя
-                if (isAuth && !file.exists()) {
+                if (!file.exists()) {
                     try {
                         directory = Files.createDirectory(path);
                     } catch (IOException e) {
@@ -52,26 +56,26 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
 
         // приём файла
-        if (isAuth && msg.getClass() == FileSendMessage.class) {
+        if (msg.getClass() == FileSendMessage.class) {
             receiveFile(ctx, msg);
         }
 
         // отправка файла
-        if (isAuth && msg.getClass() == FileReceiveMessage.class) {
+        if (msg.getClass() == FileReceiveMessage.class) {
             sendFile(ctx, msg);
         }
 
         // переименование файла
-        if (isAuth && msg.getClass() == FileServerRenameMessage.class) {
+        if (msg.getClass() == FileServerRenameMessage.class) {
             renameFile(msg);
         }
 
         // создание файла
-        if (isAuth && msg.getClass() == FileServerCreate.class) {
+        if (msg.getClass() == FileServerCreate.class) {
             createFile(msg);
         }
 
-        if (isAuth && msg.getClass() == FileServerDelete.class) {
+        if (msg.getClass() == FileServerDelete.class) {
             deleteFile(msg);
         }
         log.debug("Received {}", msg);
@@ -97,9 +101,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
     }
 
     private void createFile(AbstractMessage msg) {
-        File file = new File(directory.toFile() + "/" + ((FileServerCreate) msg).getFile());
         try {
-            file.createNewFile();
+            if (((FileServerCreate) msg).isFile()) {
+                Files.createFile(Paths.get(directory.toFile() + "/" + ((FileServerCreate) msg).getFile()));
+            } else {
+                Files.createDirectory(Paths.get(directory.toFile() + "/" + ((FileServerCreate) msg).getFile()));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
