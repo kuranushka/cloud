@@ -3,7 +3,7 @@ package ru.kuranov.client.msg;
 import lombok.Data;
 
 @Data
-public class Message {
+public class Message extends AbstractMessage{
     private String fileName;
     private Command command;
     private byte[] buf;

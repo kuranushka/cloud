@@ -32,7 +32,7 @@ public class CreateFile implements Initializable {
         createLabel.setText("To create a file on your computer enter the name");
     }
 
-    public void create(ActionEvent event) {
+    /*public void create(ActionEvent event) {
         if (createTextField.getText() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter name file ...");
             alert.show();
@@ -78,5 +78,5 @@ public class CreateFile implements Initializable {
             isCreateFile = false;
             log.debug("Create directory");
         }
-    }
+    }*/
 }

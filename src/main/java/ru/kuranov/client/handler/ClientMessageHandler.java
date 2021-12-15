@@ -11,6 +11,7 @@ import ru.kuranov.client.net.NettyClient;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Slf4j
 @Data
@@ -64,22 +65,25 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, AbstractMessage msg) {
         auth(msg);
-        readServerFileList(msg);
+        //readServerFileList(msg);
 
-        if (msg.getClass() == FileSendMessage.class) {
-            saveFile(msg);
-        }
+//        if (msg.getClass() == FileSendMessage.class) {
+//            saveFile(msg);
+//        }
     }
 
-    private void readServerFileList(AbstractMessage msg) {
+/*    private void readServerFileList(AbstractMessage msg) {
         if (msg.getClass() == FileListMessage.class) {
-            serverFiles = ((FileListMessage) msg).getFiles();
+            Optional<String[]> optFiles = ((FileListMessage) msg).getFiles();
+            if(optFiles.isPresent()){
+            serverFiles = optFiles.get();
+            }
         }
     }
 
     public String[] getServerFileList() {
         return serverFiles;
-    }
+    }*/
 
     private void auth(AbstractMessage msg) {
         if (msg.getClass() == AuthMessage.class && ((AuthMessage) msg).isAuth()) {
@@ -89,7 +93,8 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
         }
     }
 
-    public void sendFile(String s) {
+
+    /*public void sendFile(String s) {
         File file = new File(s);
         FileInputStream fis = null;
         try {
@@ -171,5 +176,7 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<AbstractMe
     public void deleteServerFile(String s) {
         FileServerDelete fileServerDelete = new FileServerDelete(s);
         netty.sendMessage(fileServerDelete);
-    }
+    }*/
+
+
 }

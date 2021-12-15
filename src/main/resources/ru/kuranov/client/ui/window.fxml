@@ -20,108 +20,60 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
         </padding>
     </HBox>
-    <HBox alignment="TOP_CENTER" layoutY="44.0" prefHeight="30.0" prefWidth="850.0">
-        <VBox alignment="TOP_CENTER" prefHeight="21.0" prefWidth="53.0" HBox.hgrow="ALWAYS">
+    <HBox alignment="TOP_CENTER" layoutY="44.0" prefHeight="510.0" prefWidth="850.0">
+        <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="338.0" HBox.hgrow="ALWAYS">
             <Label fx:id="myComputerLabel" text="My computer">
-                <padding>
-                    <Insets left="20.0" right="20.0" />
-                </padding>
+            <VBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+            <font>
+               <Font size="14.0" />
+            </font>
             </Label>
+         <Button mnemonicParsing="false" fx:id="clientLevelUpButton" prefHeight="25.0" prefWidth="541.0" text=". . . level up" onAction="#clientLevelUp"/>
+
+            <ListView fx:id="clientFileList" prefHeight="483.0" prefWidth="606.0" VBox.vgrow="ALWAYS" />
 
         </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="21.0" prefWidth="68.0" HBox.hgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" prefHeight="432.0" prefWidth="110.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#create" text="create" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="60.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#upload" text="upload" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#download" text="download" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#rename" text="rename" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#delete" text="delete" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Button>
+         </children>
+
+        </VBox>
+        <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
 
             <Label fx:id="cloudStorageLabel" text="Cloud storage">
-                <padding>
-                    <Insets left="20.0" right="20.0" />
-                </padding>
+            <VBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+            <font>
+               <Font size="14.0" />
+            </font>
             </Label>
+         <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="265.0" text=". . . level up" />
 
-        </VBox>
+            <ListView fx:id="serverFileList" prefHeight="483.0" prefWidth="260.0" VBox.vgrow="ALWAYS" />
 
-        <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-        </padding>
-    </HBox>
-    <HBox layoutX="-2.0" layoutY="83.0" prefHeight="476.0" prefWidth="850.0">
-
-        <VBox prefHeight="498.0" prefWidth="367.0">
-
-            <ListView fx:id="homeFileList" onMouseClicked="#updateClientFilesList" prefHeight="442.0" prefWidth="346.0" VBox.vgrow="ALWAYS" />
-
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
-        </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="380.0" prefWidth="130.0">
-
-            <Button fx:id="buttonUpDirectory" minWidth="70.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="145.0" text="↑↑">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonOpenFile" minWidth="70.0" mnemonicParsing="false" onAction="#openFile" prefHeight="26.0" prefWidth="146.0" text="open">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonCreateFile" minWidth="70.0" mnemonicParsing="false" onAction="#createFile" prefHeight="26.0" prefWidth="135.0" text="create">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonReceiveFile" minWidth="70.0" mnemonicParsing="false" onAction="#downloadNew" prefHeight="26.0" prefWidth="142.0" text="&lt;&lt; download">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonSendFile" minWidth="70.0" mnemonicParsing="false" onAction="#uploadNew" prefHeight="26.0" prefWidth="131.0" text="upload &gt;&gt;">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonRenameFile" minWidth="70.0" mnemonicParsing="false" onAction="#renameFile" prefHeight="26.0" prefWidth="145.0" text="rename">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-            <Button fx:id="buttonDeleteFile" minWidth="70.0" mnemonicParsing="false" onAction="#deleteFile" prefHeight="26.0" prefWidth="170.0" text="delete">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="11.0" />
-                </font>
-            </Button>
-         <Button mnemonicParsing="false" onAction="#renameNew" text="CATCH" />
-         <Button mnemonicParsing="false" text="deleteNew" onAction="#deleteNew"/>
-
-        </VBox>
-        <VBox prefHeight="498.0" prefWidth="377.0">
-
-            <ListView fx:id="serverFileList" onMouseClicked="#updateServerFilesList" prefHeight="353.0" prefWidth="303.0" VBox.vgrow="ALWAYS" />
-
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
         </VBox>
 
         <padding>

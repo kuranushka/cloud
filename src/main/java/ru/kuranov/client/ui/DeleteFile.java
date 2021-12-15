@@ -34,7 +34,7 @@ public class DeleteFile implements Initializable {
         }
     }
 
-    public void yesDelete(ActionEvent event) {
+    /*public void yesDelete(ActionEvent event) {
         if (clientDeleteFile != null && serverDeleteFile == null) {
             handler.deleteClientFile(clientDeleteFile);
         }
@@ -48,5 +48,5 @@ public class DeleteFile implements Initializable {
     public void noDelete(ActionEvent event) {
         Window window = ((Node) event.getSource()).getScene().getWindow();
         window.hide();
-    }
+    }*/
 }

@@ -7,12 +7,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.auth.Authentication;
 import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.net.NettyClient;
 
 import java.io.IOException;
-
+@Slf4j
 public class ClientStart extends Application {
 
     public Label label;
@@ -28,12 +29,13 @@ public class ClientStart extends Application {
     private boolean isNewUser;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
         netty = NettyClient.getInstance(System.out::println);
         Parent root = FXMLLoader.load(getClass().getResource("auth.fxml"));
         Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        stage.setTitle("CLoud Storage Authentication");
+        stage.setScene(scene);
+        stage.show();
 
         netty = NettyClient.getInstance(System.out::println);
         label = new Label();
@@ -44,9 +46,10 @@ public class ClientStart extends Application {
     }
 
     public void send(ActionEvent e) {
-        authMessage = new AuthMessage(isNewUser, false, user.getText(), password.getText());
+        //authMessage = new AuthMessage(isNewUser, false, user.getText(), password.getText());
+        authMessage = new AuthMessage(isNewUser, false, "user1", "pass1");
         netty = NettyClient.getInstance(System.out::println);
-        netty.sendMessage(authMessage);
+        netty.sendAuth(authMessage);
 
         try {
             Thread.sleep(1000);// задержка на отправку и возврат авторизации из базы
@@ -55,6 +58,7 @@ public class ClientStart extends Application {
         }
 
         if (Authentication.isAuth()) {
+            log.debug("Auth {}",Authentication.isAuth());
             Auth auth = new Auth();
             try {
                 auth.auth(e);

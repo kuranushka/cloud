@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
@@ -56,30 +57,39 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
 
         // приём файла
-        if (msg.getClass() == FileSendMessage.class) {
+        if (((Message)msg).getCommand() == Command.UPLOAD) {
             receiveFile(ctx, msg);
         }
 
         // отправка файла
-        if (msg.getClass() == FileReceiveMessage.class) {
+        if (((Message)msg).getCommand() == Command.DOWNLOAD) {
             sendFile(ctx, msg);
         }
 
-        // переименование файла
-        if (msg.getClass() == FileServerRenameMessage.class) {
+        // переименование папки, файла
+        if (((Message)msg).getCommand() == Command.RENAME) {
             renameFile(msg);
         }
 
         // создание файла
-        if (msg.getClass() == FileServerCreate.class) {
+        if (((Message)msg).getCommand() == Command.NEW_FILE) {
             createFile(msg);
         }
 
-        if (msg.getClass() == FileServerDelete.class) {
+        // создание папки
+        if (((Message)msg).getCommand() == Command.NEW_DIRECTORY) {
+            createDirectory(msg);
+        }
+
+        // удаление папки, файла
+        if (((Message)msg).getCommand() == Command.DELETE) {
             deleteFile(msg);
         }
-        log.debug("Received {}", msg);
+
         sendListFiles(ctx);
+    }
+
+    private void createDirectory(AbstractMessage msg) {
     }
 
     private void deleteFile(AbstractMessage msg) {
@@ -146,7 +156,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
     // отправить клиенту список файлов из его папки
     private void sendListFiles(ChannelHandlerContext ctx) {
         String[] files = file.list();
-        FileListMessage msg = new FileListMessage(files);
+        Optional<String[]> optList = Optional.ofNullable(files);
+        FileListMessage msg = new FileListMessage(optList);
         ctx.writeAndFlush(msg);
         log.debug("Dir {} files: {}", directory + "/", Arrays.toString(files));
     }

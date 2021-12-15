@@ -38,7 +38,7 @@ public class RenameFile implements Initializable {
         }
     }
 
-    public void rename(ActionEvent event) {
+    /*public void rename(ActionEvent event) {
         if (clientOldName != null && serverOldName == null) {
             handler.renameClientFile(clientOldName, renameField.getText());
         }
@@ -48,5 +48,5 @@ public class RenameFile implements Initializable {
         }
         Window window = ((Node) event.getSource()).getScene().getWindow();
         window.hide();
-    }
+    }*/
 }
