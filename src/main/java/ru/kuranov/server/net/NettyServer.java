@@ -11,7 +11,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
-import ru.kuranov.server.handler.MessageHandler;
+import ru.kuranov.server.handler.ServerMessageHandler;
 
 @Slf4j
 public class NettyServer {
@@ -28,7 +28,7 @@ public class NettyServer {
                             socketChannel.pipeline().addLast(
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                     new ObjectEncoder(),
-                                    new MessageHandler());
+                                    new ServerMessageHandler());
                         }
                     }).bind(8189).sync();
 

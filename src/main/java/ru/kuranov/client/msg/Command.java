@@ -6,5 +6,8 @@ public enum Command {
     RENAME,
     NEW_FILE,
     NEW_DIRECTORY,
-    DELETE
+    DELETE,
+    REFRESH,
+    OPEN_IN,
+    OPEN_OUT
 }

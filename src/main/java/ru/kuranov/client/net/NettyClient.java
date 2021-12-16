@@ -37,7 +37,6 @@ public class NettyClient {
                                 ch.pipeline().addLast(
                                         new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                         new ObjectEncoder(),
-                                        //new ClientMessageHandler(callback),
                                         ClientMessageHandler.getInstance(callback)
                                 );
                             }
