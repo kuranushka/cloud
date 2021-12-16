@@ -89,6 +89,20 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
         sendListFiles(ctx);
     }
 
+    // сохраняем файл от клиента
+    private void receiveFile(ChannelHandlerContext ctx, AbstractMessage msg) {
+        try {
+            FileOutputStream fos = new FileOutputStream(directory.toFile() + "/" + ((FileSendMessage) msg).getFile());
+            byte[] buf = ((FileSendMessage) msg).getByf();
+            fos.write(buf);
+            log.debug("Files {} saved to {}", ((FileSendMessage) msg).getFile(), directory.toFile());
+            sendListFiles(ctx);
+        } catch (IOException e) {
+            log.debug("File not saved in user directory");
+        }
+    }
+
+
     private void createDirectory(AbstractMessage msg) {
     }
 
@@ -139,19 +153,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<AbstractMessage>
 
     }
 
-    // сохраняем файл от клиента
-    private void receiveFile(ChannelHandlerContext ctx, AbstractMessage msg) {
-        log.debug("Place to save {}", directory.toString());
-        try {
-            FileOutputStream fos = new FileOutputStream(directory.toFile() + "/" + ((FileSendMessage) msg).getFile());
-            byte[] buf = ((FileSendMessage) msg).getByf();
-            fos.write(buf);
-            log.debug("Files {} saved to {}", ((FileSendMessage) msg).getFile(), directory.toFile());
-            sendListFiles(ctx);
-        } catch (IOException e) {
-            log.debug("File not saved in user directory");
-        }
-    }
+
 
     // отправить клиенту список файлов из его папки
     private void sendListFiles(ChannelHandlerContext ctx) {

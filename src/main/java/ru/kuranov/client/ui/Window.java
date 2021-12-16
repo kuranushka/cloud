@@ -7,15 +7,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import lombok.Data;
+import javafx.scene.layout.GridPane;
 import lombok.extern.slf4j.Slf4j;
+import ru.kuranov.client.auth.Authentication;
 import ru.kuranov.client.handler.ClientMessageHandler;
 import ru.kuranov.client.handler.OnMessageReceived;
+import ru.kuranov.client.msg.AuthMessage;
 import ru.kuranov.client.msg.Command;
 import ru.kuranov.client.msg.Message;
 import ru.kuranov.client.net.NettyClient;
@@ -35,24 +38,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Data
 public class Window implements Initializable {
 
-    /*    private static Window instance;
-        public Button buttonUpDirectory;
-        public Button buttonOpenFile;
-        public Button buttonSendFile;
-        public Button buttonReceiveFile;
-        public Button buttonRenameFile;
-        public Button buttonDeleteFile;*/
     public ListView<String> clientFileList;
     public ListView<String> serverFileList;
-    //public Button buttonCreateFile;
     public Label myComputerLabel;
     public Label cloudStorageLabel;
     public Button clientLevelUpButton;
-    //public TableView<FileInfo> clientTable;
-    //private File rootDirectory;
     private String[] clientFiles;
     private String[] serverFiles;
     private String selectedHomeFile;
@@ -68,11 +60,12 @@ public class Window implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         netty = NettyClient.getInstance(System.out::println);
         root = Paths.get(System.getProperty("user.home"));
         handler = ClientMessageHandler.getInstance(callback);
         refreshClientFiles();
-
+        auth();
 
         //showServerFiles();
         selectedHomeFile = "CLIENT FILE";
@@ -103,32 +96,58 @@ public class Window implements Initializable {
         });
     }
 
+    // авторизация на сервере
+    private void auth() {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Authentication");
+        dialog.setHeaderText("Cloud Storage Authentication\nEnter user and password");
+        dialog.setResizable(false);
 
+        Label label1 = new Label("User: ");
+        Label label2 = new Label("Password: ");
+        Label label3 = new Label("New user?");
+        TextField user = new TextField();
+        PasswordField pass = new PasswordField();
+        RadioButton isNew = new RadioButton();
 
-    /*private void showServerFiles() {
-        selectedHomeFile = null;
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        GridPane grid = new GridPane();
+        grid.add(label1, 1, 1);
+        grid.add(user, 2, 1);
+        grid.add(label2, 1, 2);
+        grid.add(pass, 2, 2);
+        grid.add(label3, 1, 3);
+        grid.add(isNew, 2, 3);
+        dialog.getDialogPane().setContent(grid);
+        ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(ok);
+
+        while (!Authentication.isAuth()) {
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                log.debug("User {} Pass {} isNew {}", user.getText(), pass.getText(), isNew.isSelected());
+                netty.sendAuth(new AuthMessage(isNew.isSelected(), false, user.getText(), pass.getText()));
+
+                try {
+                    Thread.sleep(1000);// задержка на отправку и возврат авторизации из базы
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (Authentication.isAuth()) {
+                    log.debug("Auth {}", Authentication.isAuth());
+                    Auth auth = new Auth();
+                    log.debug("Logged");
+                    return;
+                } else {
+                    dialog.setHeaderText("login or password uncorrected\ntry again ...");
+                    user.clear();
+                    pass.clear();
+                }
+            }
         }
-        serverFiles = handler.getServerFileList();
-        itemsServer = FXCollections.observableArrayList(serverFiles);
-        serverFileList.setItems(itemsServer);
-        serverFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        log.debug("ServerFiles: {}", Arrays.toString(serverFiles));
-        serverFileList.getSelectionModel().getSelectedItems().addListener(
-                (ListChangeListener.Change<? extends String> change) ->
-                {
-                    ObservableList<String> oList = serverFileList.getSelectionModel().getSelectedItems();
-                    log.debug("Server ObservableList: {}", oList);
+    }
 
-                    selectedServerFile = oList.get(0);
-                    log.debug("Server Selected files: {}", selectedServerFile);
-                });
-    }*/
-
-    // обновления отображения
+    // обновление таблици файлов
     private void refreshClientFiles() {
         File file = new File(root.toString());
         List<String> dirs = Arrays.stream(file.list())
@@ -194,93 +213,6 @@ public class Window implements Initializable {
                     log.debug("Selected files: {}", selectedHomeFile);
                 });*/
     }
-
-    /*public void renameFile(ActionEvent event) throws IOException {
-        log.debug("Home file: " + selectedHomeFile + " Server file: " + selectedServerFile);
-        if (selectedHomeFile != null && selectedServerFile == null) {
-            handler.setClientRenamedFile(selectedHomeFile);
-            handler.setServerRenamedFile(null);
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(RenameFile.class.getResource("rename.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Rename " + selectedHomeFile);
-            stage.setResizable(false);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
-        }
-        if (selectedHomeFile == null && selectedServerFile != null) {
-            handler.setServerRenamedFile(selectedServerFile);
-            handler.setClientRenamedFile(null);
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(RenameFile.class.getResource("rename.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Rename " + selectedServerFile);
-            stage.setResizable(false);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
-        }
-
-    }
-
-    public void updateClientFilesList(MouseEvent mouseEvent) {
-        showClientFiles();
-    }
-
-    public void updateServerFilesList(MouseEvent mouseEvent) {
-        showServerFiles();
-    }
-
-    public void openFile(ActionEvent event) {
-        if (selectedHomeFile != null && selectedServerFile == null) {
-            try {
-                Desktop.getDesktop().open(new File(selectedHomeFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (selectedHomeFile == null && selectedServerFile != null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "You can only open files from your computer");
-            alert.show();
-        }
-
-    }
-
-    public void createFile(ActionEvent event) throws IOException {
-        Stage stage = new Stage();
-        Parent root = FXMLLoader.load(CreateFile.class.getResource("create.fxml"));
-        stage.setScene(new Scene(root));
-        stage.setTitle("Create file");
-        stage.setResizable(false);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.show();
-
-    }
-
-    public void deleteFile(ActionEvent event) throws IOException {
-        if (selectedHomeFile != null && selectedServerFile == null) {
-            handler.setClientDeletedFile(selectedHomeFile);
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(DeleteFile.class.getResource("delete.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Delete " + selectedHomeFile + " ?");
-            stage.setResizable(false);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
-        }
-
-        if (selectedHomeFile == null && selectedServerFile != null) {
-            handler.setServerDeletedFile(selectedServerFile);
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(DeleteFile.class.getResource("delete.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Delete " + selectedServerFile + " ?");
-            stage.setResizable(false);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
-        }
-    }*/
-
 
     // создание файла , папки
     public void create(ActionEvent event) {
@@ -475,4 +407,28 @@ public class Window implements Initializable {
     private void updatePathLabel(Path root) {
         clientLevelUpButton.setText("↑↑  " + root.toString());
     }
+
+    /*private void showServerFiles() {
+        selectedHomeFile = null;
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        serverFiles = handler.getServerFileList();
+        itemsServer = FXCollections.observableArrayList(serverFiles);
+        serverFileList.setItems(itemsServer);
+        serverFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        log.debug("ServerFiles: {}", Arrays.toString(serverFiles));
+        serverFileList.getSelectionModel().getSelectedItems().addListener(
+                (ListChangeListener.Change<? extends String> change) ->
+                {
+                    ObservableList<String> oList = serverFileList.getSelectionModel().getSelectedItems();
+                    log.debug("Server ObservableList: {}", oList);
+
+                    selectedServerFile = oList.get(0);
+                    log.debug("Server Selected files: {}", selectedServerFile);
+                });
+    }*/
+
 }

@@ -30,30 +30,30 @@
                <Font size="14.0" />
             </font>
             </Label>
-         <Button mnemonicParsing="false" fx:id="clientLevelUpButton" prefHeight="25.0" prefWidth="541.0" text=". . . level up" onAction="#clientLevelUp"/>
+         <Button fx:id="clientLevelUpButton" mnemonicParsing="false" onAction="#clientLevelUp" prefHeight="25.0" prefWidth="541.0" text=". . . level up" />
 
             <ListView fx:id="clientFileList" prefHeight="483.0" prefWidth="606.0" VBox.vgrow="ALWAYS" />
 
         </VBox>
         <VBox alignment="TOP_CENTER" prefHeight="432.0" prefWidth="110.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#create" text="create" VBox.vgrow="ALWAYS">
+            <Button mnemonicParsing="false" onAction="#create" prefWidth="90.0" text="create" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="60.0" />
                </VBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#upload" text="upload" VBox.vgrow="ALWAYS">
+            <Button mnemonicParsing="false" onAction="#upload" prefWidth="90.0" text="upload" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#download" text="download" VBox.vgrow="ALWAYS">
+            <Button mnemonicParsing="false" onAction="#download" prefWidth="90.0" text="download" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#rename" text="rename" VBox.vgrow="ALWAYS">
+            <Button mnemonicParsing="false" onAction="#rename" prefWidth="90.0" text="rename" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#delete" text="delete" VBox.vgrow="ALWAYS">
+            <Button mnemonicParsing="false" onAction="#delete" prefWidth="90.0" text="delete" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin></Button>

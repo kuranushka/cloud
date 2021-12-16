@@ -60,8 +60,6 @@ public class NettyClient {
         }
     }
 
-
-
     public void sendAuth(AuthMessage message) {
         channel.writeAndFlush(message);
     }
@@ -69,27 +67,4 @@ public class NettyClient {
     public void sendMessage(Message message) {
         channel.writeAndFlush(message);
     }
-
-
-/*    public void sendMessage(FileSendMessage message) {
-        channel.writeAndFlush(message);
-    }
-
-    public void sendMessage(FileServerRenameMessage message) {
-        channel.writeAndFlush(message);
-    }
-
-    public void sendMessage(FileServerCreate message) {
-        channel.writeAndFlush(message);
-    }
-
-    public void sendMessage(FileServerDelete message) {
-        channel.writeAndFlush(message);
-    }
-
-    public void sendMessage(FileReceiveMessage message) {
-        channel.writeAndFlush(message);
-    }*/
-
-
 }
