@@ -21,7 +21,12 @@ public class AuthDB {
     }
 
     public boolean auth(AuthMessage msg) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "-1Password*)")) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/cloud", "postgres", "root")) {
             if (conn != null) {
                 log.debug("Connection to DB is Up");
 

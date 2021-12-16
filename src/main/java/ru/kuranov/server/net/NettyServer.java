@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
@@ -31,7 +32,7 @@ public class NettyServer {
                                     new ServerMessageHandler());
                         }
                     }).bind(8189).sync();
-
+            log.debug("Server started ...");
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("e=", e);

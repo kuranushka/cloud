@@ -56,6 +56,7 @@ public class ServerMessageHandler extends SimpleChannelInboundHandler<AbstractMe
                 // возвращаем авторизацию клиенту
                 ctx.writeAndFlush(msg);
                 sendListFiles(ctx);
+                return;
             }
         }
 

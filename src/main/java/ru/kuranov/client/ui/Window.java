@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -12,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import lombok.extern.slf4j.Slf4j;
 import ru.kuranov.client.auth.Authentication;
@@ -50,8 +48,6 @@ public class Window implements Initializable {
     public Button serverLevelButton;
     private String selectedHomeFile;
     private String selectedServerFile;
-    private ObservableList<String> itemsClient;
-    private ObservableList<String> itemsServer;
     private NettyClient netty;
     private OnMessageReceived callback;
     private Path root;
@@ -72,21 +68,18 @@ public class Window implements Initializable {
         refreshServerFiles();
 
         // двойной клик, навигация или открытие файла клиента
-        clientFileList.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    if (event.getClickCount() == 2) {
-                        if (isSelectClientFile) {
-                            if (Files.isDirectory(Paths.get(root + "/" + converter.convertString(selectedHomeFile)))) {
-                                root = Paths.get(root + "/" + converter.convertString(selectedHomeFile));
-                                refreshClientFiles();
-                            } else {
-                                try {
-                                    Desktop.getDesktop().open(new File(root + "/" + converter.convertString(selectedHomeFile)));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+        clientFileList.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (event.getClickCount() == 2) {
+                    if (isSelectClientFile) {
+                        if (Files.isDirectory(Paths.get(root + "/" + converter.convertString(selectedHomeFile)))) {
+                            root = Paths.get(root + "/" + converter.convertString(selectedHomeFile));
+                            refreshClientFiles();
+                        } else {
+                            try {
+                                Desktop.getDesktop().open(new File(root + "/" + converter.convertString(selectedHomeFile)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -95,29 +88,26 @@ public class Window implements Initializable {
         });
 
         // двойной клик, навигация или открытие файла сервера
-        serverFileList.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isSelectClientFile = false;
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    if (event.getClickCount() == 2) {
-                        if (selectedServerFile.contains("[Dir ]")) {
-                            netty.sendMessage(new Message(selectedServerFile, Command.OPEN_IN));
-                            refreshServerFiles();
-                        } else if (selectedServerFile.contains("[file]")) {
-                            Alert alert = new Alert((Alert.AlertType.CONFIRMATION));
-                            alert.setTitle("open file from Cloud Storage");
-                            alert.setHeaderText("to open " + converter.convertString(selectedServerFile) + "you must first download it. Download it to My Computer?");
-                            Optional<ButtonType> result = alert.showAndWait();
-                            if (result.isPresent()) {
-                                if (result.get() == ButtonType.OK) {
-                                    netty.sendMessage(new Message(converter.convertString(selectedServerFile), Command.DOWNLOAD));
-                                    log.debug("Client file download");
-                                    refreshServerFiles();
-                                }
-                            } else if (result.get() == ButtonType.CANCEL) {
-                                alert.close();
+        serverFileList.setOnMouseClicked(event -> {
+            isSelectClientFile = false;
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (event.getClickCount() == 2) {
+                    if (selectedServerFile.contains("[Dir ]")) {
+                        netty.sendMessage(new Message(selectedServerFile, Command.OPEN_IN));
+                        refreshServerFiles();
+                    } else if (selectedServerFile.contains("[file]")) {
+                        Alert alert = new Alert((Alert.AlertType.CONFIRMATION));
+                        alert.setTitle("open file from Cloud Storage");
+                        alert.setHeaderText("to open " + converter.convertString(selectedServerFile) + "you must first download it. Download it to My Computer?");
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.isPresent()) {
+                            if (result.get() == ButtonType.OK) {
+                                netty.sendMessage(new Message(converter.convertString(selectedServerFile), Command.DOWNLOAD));
+                                log.debug("Client file download");
+                                refreshServerFiles();
                             }
+                        } else if (result.get() == ButtonType.CANCEL) {
+                            alert.close();
                         }
                     }
                 }
@@ -154,11 +144,10 @@ public class Window implements Initializable {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 log.debug("User {} Pass {} isNew {}", user.getText(), pass.getText(), isNew.isSelected());
-                //netty.sendAuth(new AuthMessage(isNew.isSelected(), false, user.getText(), pass.getText()));
-                netty.sendAuth(new AuthMessage(isNew.isSelected(), false, "user1", "pass1"));
+                netty.sendAuth(new AuthMessage(isNew.isSelected(), false, user.getText(), pass.getText()));
 
                 try {
-                    Thread.sleep(DELAY);// задержка на отправку и возврат авторизации из базы
+                    Thread.sleep(1000);// задержка на отправку и возврат авторизации из базы
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -183,7 +172,7 @@ public class Window implements Initializable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        itemsServer = FXCollections.observableArrayList(handler.getServerFiles());
+        ObservableList<String> itemsServer = FXCollections.observableArrayList(handler.getServerFiles());
         serverFileList.setItems(itemsServer);
         serverFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
@@ -223,7 +212,7 @@ public class Window implements Initializable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        itemsClient = FXCollections.observableArrayList(files);
+        ObservableList<String> itemsClient = FXCollections.observableArrayList(files);
         clientFileList.setItems(itemsClient);
         clientFileList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
